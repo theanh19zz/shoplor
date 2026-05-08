@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Discover the latest trends in fashion for 
+        women and men at SA FashionStyle. Shop our wide selection of clothes, bags,
+        jewelry, and more. Elevate your style with our curated collections.">
+    <meta name="keywords"
+        content="clothes, women, men, fashion, bags, jewelry, SA FashionStyle, latest trends, stylish clothing, accessories">
+    <meta name="author" content="Thế Anh Shop">
+    <link rel="icon" href="images/logo1.png" type="image/x-icon">
+    <!-- css -->
+    <link rel="stylesheet" href="Style/products.css">
+    <link rel="stylesheet" href="Style/main.css">
+    <link rel="stylesheet" href="Style/filter.css">
+    <!-- Google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+        rel="stylesheet">
+    <!-- icon -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <title>Thế Anh Shop</title>
+    <style>
+        .products .content {
+            perspective: 1000px;
+        }
+
+        .product-card {
+            position: relative;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            /* Cắt phần ruy băng thừa thò ra ngoài thẻ */
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            border: 1px solid transparent;
+            transform-style: preserve-3d;
+            animation: shadowPulse 4s infinite ease-in-out;
+            will-change: transform, box-shadow;
+        }
+
+        .product-card:hover {
+            animation: none;
+            transform: translateY(-5px) rotateX(1deg) rotateY(0.5deg);
+            box-shadow: 0 30px 60px rgba(9, 122, 110, 0.25);
+            z-index: 5;
+        }
+
+        /* Inner Zoom Effect */
+        .card-img {
+            overflow: hidden;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .card-img img {
+            transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            display: block;
+            background-color: #f0f0f0;
+        }
+
+        .product-card:hover .card-img img {
+            transform: scale(1.15);
+        }
+
+        /* Preloader Styles */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loader {
+            width: 45px;
+            height: 45px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Skeleton Screen Styles */
+        .skeleton-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .skeleton-img {
+            width: 100%;
+            height: 250px;
+            background: #eee;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .skeleton-text {
+            height: 15px;
+            background: #eee;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .skeleton-price {
+            width: 60%;
+            height: 15px;
+            background: #eee;
+            border-radius: 4px;
+        }
+
+        .shimmer {
+            background: linear-gradient(90deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -100% 0;
+            }
+
+            100% {
+                background-position: 100% 0;
+            }
+        }
+
+        /* Progress Bar Styles */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: transparent;
+            z-index: 10001;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #27ae60;
+            width: 0%;
+            transition: width 0.1s ease-out;
+        }
+
+        /* Style cho biểu tượng trong danh mục */
+        .shop_categories .categories_link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            /* Đẩy badge sang phải */
+            gap: 12px;
+            padding: 8px 0;
+        }
+
+        .shop_categories .categories_link ion-icon {
+            font-size: 20px;
+            color: #555;
+            transition: color 0.3s ease;
+        }
+
+        .shop_categories .categories_link:hover ion-icon,
+        .shop_categories .categories_link.active ion-icon {
+            color: #27ae60;
+        }
+
+        .cat-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .category-badge {
+            background: #f0f0f0;
+            color: #666;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .categories_link:hover .category-badge,
+        .categories_link.active .category-badge {
+            background: #27ae60;
+            color: #fff;
+        }
+
+        /* Search Box Styles */
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: #f9f9f9;
+            padding: 5px 15px;
+            border-radius: 25px;
+            border: 1px solid #ddd;
+            margin-right: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus-within {
+            border-color: #27ae60;
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            padding: 5px;
+            font-size: 14px;
+            width: 180px;
+        }
+
+        /* Search History Dropdown */
+        .search-history-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none;
+            margin-top: 5px;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .search-history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background 0.2s;
+            border-bottom: 1px solid #f9f9f9;
+        }
+
+        .search-history-item:hover {
+            background: #f5f5f5;
+        }
+
+        .search-history-item .delete-history-btn {
+            color: #ccc;
+            font-size: 18px;
+            display: flex;
+            padding: 2px;
+        }
+
+        .search-history-item .delete-history-btn:hover {
+            color: #da291c;
+        }
+
+        /* No Products Found Styles */
+        .no-products {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+            background: #fff;
+            border-radius: 12px;
+        }
+
+        .no-products ion-icon {
+            font-size: 64px;
+            color: #eee;
+            margin-bottom: 15px;
+        }
+
+        /* Product Badge Labels */
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            z-index: 3;
+            color: #fff;
+            pointer-events: none;
+        }
+
+        .badge-trending {
+            background-color: #e67e22;
+            /* Màu cam cho Bán chạy */
+        }
+
+        .badge-discount {
+            background-color: #d63031;
+            /* Màu đỏ cho Giảm giá */
+            top: 15px;
+            left: -35px;
+            transform: rotate(-45deg);
+            width: 130px;
+            text-align: center;
+            border-radius: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 0.85em;
+            margin-left: 8px;
+            font-weight: 400;
+        }
+
+        /* Fix layout overlap for Search and Products */
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: #fff;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .product-header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .main-container {
+            display: flex;
+            gap: 30px;
+            padding: 0 5%;
+            align-items: flex-start;
+        }
+
+        #discount-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 10002;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        #discount-toast.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="discount-toast"></div>
+    <div class="progress-container">
+        <div class="progress-bar" id="scrollBar"></div>
+    </div>
+    <div id="preloader">
+        <div class="loader"></div>
+    </div>
+    <header class="container" id="header">
+        <div class="header_top">
+            <div class="header_social">
+                <a href="https://www.instagram.com/sa__fashionstyle/?igsh=eWpjbWFqc3FlbGhl" target="_blank">
+                    <ion-icon name="logo-instagram"></ion-icon>
+                </a>
+                <a href="https://www.facebook.com/people/SA_Fashionstyle/100088622209447/?mibextid=LQQJ4d"
+                    target="_blank">
+                    <ion-icon name="logo-facebook"></ion-icon>
+                </a>
+                <a href="https://wa.me/201007738790" target="_blank">
+                    <ion-icon name="logo-whatsapp"></ion-icon>
+                </a>
+            </div>
+            <img src="images/logo_block.jpg" alt="page logo" id="logo" onclick="window.location.href='index.html'"
+                style="cursor:pointer">
+            <div class="header_actions">
+                <div id="display_login">
+                    <span id="user_name" style="margin-right: 10px; font-weight: 500; cursor: pointer;"></span>
+                </div>
+                <a href="login.html" title="Login" id="login_btn">
+                    <ion-icon name="person-circle-outline"></ion-icon>
+                </a>
+                <a href="#" class="icon-cart">
+                    <ion-icon name="cart-outline"></ion-icon>
+                    <span id="cart-counter">0</span>
+                </a>
+            </div>
+        </div>
+        <nav id="navbar">
+            <menu>
+                <ul>
+                    <li><a href="index.html">Trang Chủ</a></li>
+                    <li>
+                        <a href="products.html" class="nav-item-with-icon">
+                            Cửa Hàng <ion-icon name="chevron-down-outline" style="font-size: 12px;"></ion-icon>
+                        </a>
+                        <ul class="dropdown">
+                            <li><a href="products.html?category=Woman">Quần Áo Nữ</a></li>
+                            <li><a href="products.html?category=Man">Quần Áo Nam</a></li>
+                            <li><a href="products.html?category=Kids">Quần Áo Trẻ Em</a></li>
+                            <li><a href="products.html?category=Accessories">Phụ Kiện</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="like-new.html">Đồ Like-New</a></li>
+                    <li><a href="#">Liên Hệ</a></li>
+                </ul>
+            </menu>
+        </nav>
+    </header>
+    <main>
+        <div class="product-header">
+            <div class="menu-icon" onclick="toggleSidebar()">
+                <ion-icon name="grid-outline"></ion-icon>
+            </div>
+            <div class="product-header-right">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm...">
+                    <ion-icon name="search-outline"></ion-icon>
+                </div>
+                <div class="sortBy">
+                    <span>Sắp xếp :</span>
+                    <select id="sort">
+                        <option value="Featured">Nổi bật</option>
+                        <option value="PriceLowToHigh">Giá: Thấp đến Cao</option>
+                        <option value="PriceHighToLow">Giá: Cao đến Thấp</option>
+                        <option value="Alphabetically">Tên: A-Z</option>
+                    </select>
+                </div>
+                <span id="productCount"></span>
+            </div>
+        </div>
+        <div class="main-container">
+            <aside class="filter-sidebar">
+                <!-- Trạng thái lọc -->
+                <div class="filter-group">
+                    <h3 class="filter-title">Bộ lọc đã chọn</h3>
+                    <div class="applied-tags">
+                    </div>
+                    <button class="clear-all">Xóa tất cả</button>
+                </div>
+
+                <!-- Danh mục Accordion -->
+                <div class="filter-group">
+                    <h3 class="filter-title">Danh mục sản phẩm</h3>
+                    <details class="accordion" open>
+                        <summary>Thời trang <ion-icon name="chevron-down-outline"></ion-icon></summary>
+                        <ul class="sub-filter">
+                            <li><a href="#" class="categories_link" productCategory="all">Tất cả sản phẩm</a></li>
+                            <li><a href="#" class="categories_link" productCategory="Man">Thời trang Nam</a></li>
+                            <li><a href="#" class="categories_link" productCategory="Woman">Thời trang Nữ</a></li>
+                            <li><a href="#" class="categories_link" productCategory="Kids">Trẻ em</a></li>
+                        </ul>
+                    </details>
+                    <details class="accordion">
+                        <summary>Phụ kiện <ion-icon name="add-outline"></ion-icon></summary>
+                        <ul class="sub-filter">
+                            <li><a href="#" class="categories_link" productCategory="Accessories">Túi xách & Trang
+                                    sức</a></li>
+                        </ul>
+                    </details>
+                </div>
+
+                <!-- Lọc màu sắc -->
+                <div class="filter-group">
+                    <h3 class="filter-title">Màu sắc</h3>
+                    <div class="color-filter-grid">
+                        <div class="color-circle" style="background: #000;" data-color="Đen" title="Đen"></div>
+                        <div class="color-circle" style="background: #fff; border: 1px solid #ddd;" data-color="Trắng"
+                            title="Trắng"></div>
+                        <div class="color-circle" style="background: #808080;" data-color="Xám" title="Xám"></div>
+                        <div class="color-circle" style="background: #ffc0cb;" data-color="Hồng" title="Hồng"></div>
+                        <div class="color-circle" style="background: #8b4513;" data-color="Nâu" title="Nâu"></div>
+                        <div class="color-circle" style="background: #27ae60;" data-color="Xanh lá" title="Xanh lá">
+                        </div>
+                        <div class="color-circle" style="background: #f1c40f;" data-color="Vàng" title="Vàng"></div>
+                        <div class="color-circle" style="background: #da291c;" data-color="Đỏ" title="Đỏ"></div>
+                        <div class="color-circle" style="background: #3498db;" data-color="Xanh" title="Xanh"></div>
+                        <div class="color-circle" style="background: #e67e22;" data-color="Cam" title="Cam"></div>
+                        <div class="color-circle" style="background: #3498db;" data-color="Xanh" title="Xanh"></div>
+                        <div class="color-circle" style="background: #95a5a6;" data-color="Xám" title="Xám"></div>
+                        <div class="color-circle" style="background: #f5f5dc; border: 1px solid #ddd;" data-color="Kem"
+                            title="Kem"></div>
+                    </div>
+                </div>
+
+                <!-- Lọc kích cỡ -->
+                <div class="filter-group">
+                    <h3 class="filter-title">Kích cỡ</h3>
+                    <div class="size-grid">
+                        <div class="size-box" data-size="S">S</div>
+                        <div class="size-box" data-size="M">M</div>
+                        <div class="size-box" data-size="L">L</div>
+                        <div class="size-box" data-size="XL">XL</div>
+                        <div class="size-box" data-size="XXL">XXL</div>
+                    </div>
+                </div>
+
+                <!-- Khoảng giá Slider -->
+                <div class="filter-group">
+                    <h3 class="filter-title">Khoảng giá</h3>
+                    <div class="price-slider-container">
+                        <div class="price-input">
+                            <div class="field">
+                                <span>Min</span>
+                                <input type="number" class="input-min" value="0">
+                            </div>
+                            <div class="field">
+                                <span>Max</span>
+                                <input type="number" class="input-max" value="8000000">
+                            </div>
+                        </div>
+                        <div class="slider">
+                            <div class="progress"></div>
+                        </div>
+                        <div class="range-input">
+                            <input type="range" class="range-min" min="0" max="8000000" value="0" step="100000">
+                            <input type="range" class="range-max" min="0" max="8000000" value="8000000" step="100000">
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="products">
+                <div id="filter-notification"></div>
+                <div class="content">
+                    <!-- Sản phẩm sẽ được đổ vào đây bởi JS, tôi thêm placeholder để bạn kiểm tra layout -->
+                    <div class="skeleton-card">
+                        <div class="skeleton-img shimmer"></div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="skeleton-img shimmer"></div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="skeleton-img shimmer"></div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="skeleton-img shimmer"></div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="skeleton-img shimmer"></div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="skeleton-img shimmer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="footer-logo">
+                <img src="images/logo_block.jpg" alt="logo" width="140" style="border-radius: 8px;">
+                <p>Khách hàng là trung tâm trong mô hình kinh doanh độc đáo của chúng tôi.</p>
+            </div>
+            <div class="footer-list">
+                <div class="list">
+                    <h4>MUA SẮM</h4>
+                    <ul>
+                        <li><a href="#">Xu Hướng giày</a></li>
+                        <li><a href="#">Phụ Kiện</a></li>
+                        <li><a href="#">Sale</a></li>
+                    </ul>
+                </div>
+                <div class="list">
+                    <h4>Hỗ Trợ Khách Hàng</h4>
+                    <ul>
+                        <li><a href="#">Liên hệ chúng tôi</a></li>
+                        <li><a href="#">Phương thức thanh toán</a></li>
+                        <li><a href="order-tracking.html">Theo dõi đơn hàng</a></li>
+                        <li><a href="#">Trả lại và đổi trả</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p class="footer-company-name">
+                © 2024 Thế Anh Shop. Bảo lưu mọi quyền. <ion-icon name="heart"></ion-icon>
+                by <a href="https://www.upwork.com/freelancers/~01a11a163a8ee98a35" target="_blank" id="author">VTA</a>
+            </p>
+        </div>
+    </footer>
+    <button id="scrollBtn"><ion-icon name="arrow-up-outline" id="btn-up"></ion-icon></button>
+    <script src="JavaScript/main.js"></script>
+    <script src="JavaScript/cart.js"></script>
+    <script src="JavaScript/getData.js"></script>
+    <script>
+        window.addEventListener('load', function () {
+            const preloader = document.getElementById('preloader');
+            preloader.style.opacity = '0';
+            preloader.style.visibility = 'hidden';
+        });
+
+        // Khởi tạo reveal cho trang sản phẩm
+        function initReveal() {
+            const reveals = document.querySelectorAll(".reveal");
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("active");
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            reveals.forEach(reveal => revealObserver.observe(reveal));
+        }
+        window.addEventListener('load', initReveal);
+    </script>
+    <!-- redesigned sidebar cart -->
+    <div class="cart-section" id="cartSidebar">
+        <div class="cart-header">
+            <h2>GIỎ HÀNG</h2>
+            <div class="closeCart" id="closeCartBtn">
+                <ion-icon name="close-outline"></ion-icon>
+            </div>
+        </div>
+        <div class="cart_products_sidebar">
+            <!-- Items added by JS -->
+        </div>
+        <div class="cart_footer">
+            <div class="total_info">
+                <p>Tổng tiền thanh toán:</p>
+                <h3 id="sidebar_total_price">0đ</h3>
+            </div>
+            <div class="sidebar_btns">
+                <button class="btn_view_cart" onclick="location.href='cartPage.html'">XEM GIỎ HÀNG</button>
+                <button class="btn_checkout" onclick="checkOut()">THANH TOÁN</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

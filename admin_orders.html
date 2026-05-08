@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Đơn Hàng - Admin</title>
+    <link rel="stylesheet" href="Style/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .admin-header {
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .container-fluid {
+            width: 95%;
+            margin: 30px auto;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.approved {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .btn-logout {
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-action {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            margin-left: 5px;
+        }
+
+        .btn-approve {
+            background: #28a745;
+            margin-right: 5px;
+        }
+
+        .empty-msg {
+            text-align: center;
+            padding: 40px;
+            color: #777;
+        }
+
+        /* Admin Chat Styles */
+        .chat-section {
+            margin-top: 40px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .chat-window {
+            border: 1px solid #ddd;
+            height: 300px;
+            overflow-y: auto;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            background: #fafafa;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .msg {
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 70%;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .msg.guest {
+            background: #333;
+            color: #fff;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .msg.admin {
+            background: #007bff;
+            color: #fff;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .msg-time {
+            font-size: 10px;
+            color: #aaa;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .reply-box {
+            display: flex;
+            gap: 10px;
+        }
+
+        .reply-box input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .reply-box button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .clear-chat {
+            float: right;
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 80%;
+            max-height: 80%;
+            overflow-y: auto;
+            position: relative;
+            text-align: center;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .evidence-container img {
+            width: 100%;
+            max-width: 400px;
+            margin: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="admin-header">
+        <div class="logo">
+            <h3>THE ANH SHOP - ADMIN</h3>
+        </div>
+        <nav style="display: flex; gap: 20px; align-items: center;">
+            <a href="admin_orders.html"
+                style="text-decoration: none; color: #333; font-weight: bold; border-bottom: 2px solid #333;">Đơn
+                hàng</a>
+            <a href="admin_discounts.html" style="text-decoration: none; color: #666; font-weight: bold;">Mã giảm
+                giá</a>
+        </nav>
+        <div>
+            <span>Xin chào, Admin</span>
+            <button class="btn-logout" onclick="logoutAdmin()">Đăng Xuất</button>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <h2>📦 Danh Sách Đơn Hàng Mới</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Mã Đơn</th>
+                    <th>Ngày Đặt</th>
+                    <th>Sản phẩm (Size/Màu)</th>
+                    <th>Khách Hàng</th>
+                    <th>Số điện thoại</th>
+                    <th>Địa Chỉ</th>
+                    <th>Vận chuyển</th>
+                    <th>Phân tích giá</th>
+                    <th>Tổng Tiền</th>
+                    <th>Trạng Thái</th>
+                    <th>Vị trí vận chuyển</th>
+                    <th>Hành Động</th>
+                </tr>
+            </thead>
+            <tbody id="orderList"></tbody>
+        </table>
+    </div>
+
+    <div class="container-fluid">
+        <h2>🏷️ Danh Sách Yêu Cầu Ký Gửi</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Tình trạng</th>
+                    <th>Giá/Size/Màu</th>
+                    <th>Người bán</th>
+                    <th>Minh chứng</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody id="prelovedList"></tbody>
+        </table>
+    </div>
+
+    <div class="container-fluid">
+        <div class="chat-section">
+            <div style="margin-bottom: 15px;">
+                <h2 style="display: inline-block;">💬 Hỗ Trợ Khách Hàng</h2>
+                <button class="clear-chat" onclick="clearChat()">Xóa lịch sử chat</button>
+            </div>
+            <div class="chat-window" id="adminChatWindow">
+                <!-- Tin nhắn sẽ hiện ở đây -->
+            </div>
+            <div class="reply-box">
+                <input type="text" id="adminReplyInput" placeholder="Nhập tin nhắn trả lời...">
+                <button onclick="sendAdminReply()">Gửi Trả Lời</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal xem bằng chứng -->
+    <div class="modal-overlay" id="evidenceModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div id="evidenceBody" class="evidence-container"></div>
+        </div>
+    </div>
+
+    <script>
+        if (!sessionStorage.getItem('isAdminLoggedIn')) {
+            window.location.href = 'admin_login.html';
+        }
+
+        function logoutAdmin() {
+            sessionStorage.removeItem('isAdminLoggedIn');
+            window.location.href = 'admin_login.html';
+        }
+
+        function loadOrders() {
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const tbody = document.getElementById('orderList');
+            tbody.innerHTML = '';
+
+            if (orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="12" class="empty-msg">Chưa có đơn hàng nào</td></tr>';
+                return;
+            }
+
+            // Tạo bản sao để đảo ngược mà không làm hỏng mảng gốc
+            const displayOrders = [...orders].reverse();
+            displayOrders.forEach((order) => {
+                // Tạo danh sách sản phẩm hiển thị trong cột mới
+                let itemsHtml = (order.items || order.sanPham) ? (order.items || order.sanPham).map(item => `
+                    <div style="margin-bottom: 5px; font-size: 13px; line-height: 1.4;">
+                        <strong>• ${item.name || item.ten}</strong><br>
+                        <small style="color: #666;">
+                            Size: ${item.size || item.kichThuoc || 'N/A'} | Màu: ${item.color || item.mauSac || item.mau || 'N/A'} | SL: ${item.quantity || item.soLuong}
+                        </small>
+                    </div>
+                `).join('') : '<span style="color:#999">N/A</span>';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>#${order.id}</td>
+                    <td>${order.date || order.ngayDat}</td>
+                    <td>${itemsHtml}</td>
+                    <td>${order.customerInfo?.hoTen || order.khachHang?.hoTen || 'Khách vãng lai'}</td>
+                    <td>${order.customerInfo?.soDienThoai || order.khachHang?.soDienThoai || 'N/A'}</td>
+                    <td><small>${order.customerInfo?.diaChi || order.khachHang?.diaChi || 'N/A'}</small></td>
+                    <td><small>${order.shipping || 'Tiêu chuẩn'}</small></td>
+                    <td>
+                        <div style="font-size: 11px; line-height: 1.4; color: #666;">
+                            Tạm tính: ${order.subtotal || order.tamTinh || order.total}<br>
+                            Khoảng cách: ${order.distance || '0 km'}<br>
+                            Giảm giá: ${order.discount || order.soTienGiam || '0đ'}<br>
+                            Phí ship: ${order.shippingFee || order.phiShip || '0đ'}<br>
+                            Thuế: ${order.tax || '0đ'}
+                        </div>
+                    </td>
+                    <td style="font-weight:bold; color: #d63031;">${order.total || (order.tongCong ? order.tongCong.toLocaleString() + 'đ' : '0đ')}</td>
+                    <td><span class="status ${order.trangThaiDonHang === 'đang chuẩn bị hàng' ? 'completed' : (order.trangThaiDonHang === 'đơn bị hủy' ? 'cancelled' : 'pending')}" style="${order.trangThaiDonHang === 'đơn bị hủy' ? 'background:#f8d7da; color:#721c24;' : ''}">
+                        ${order.trangThaiDonHang === 'đang chuẩn bị hàng' ? 'Đang chuẩn bị' : (order.trangThaiDonHang === 'đơn bị hủy' ? 'Đã hủy' : 'Chờ xác nhận')}
+                    </span></td>
+                    <td>
+                        <input type="text" id="loc-${order.id}" value="${order.shippingLocation || 'Đang chuẩn bị hàng'}" style="width: 120px; padding: 4px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px;">
+                        <button class="btn-action" style="margin-top: 5px; width: 100%;" onclick="updateLoc('${order.id}')">Lưu vị trí</button>
+                    </td>
+                    <td>
+                        <button class="btn-action" onclick="toggleStatus('${order.id}')">${order.trangThaiDonHang === 'đang chuẩn bị hàng' ? 'Hoàn tác' : 'Duyệt đơn'}</button>
+                        <button class="btn-action btn-delete" onclick="deleteOrder('${order.id}')">Hủy đơn</button>
+                    </td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function toggleStatus(orderId) {
+            let orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const index = orders.findIndex(o => String(o.id) === String(orderId));
+            if (index !== -1) {
+                orders[index].trangThaiDonHang = (orders[index].trangThaiDonHang === 'đang chuẩn bị hàng') ? 'chờ xác nhận' : 'đang chuẩn bị hàng';
+                if (orders[index].trangThaiDonHang === 'đang chuẩn bị hàng') {
+                    orders[index].shippingLocation = 'Đang chuẩn bị hàng';
+                }
+                localStorage.setItem('orders', JSON.stringify(orders));
+                loadOrders();
+            }
+        }
+        function deleteOrder(orderId) {
+            if (confirm("Bạn có chắc chắn muốn hủy đơn hàng này không?")) {
+                let orders = JSON.parse(localStorage.getItem('orders')) || [];
+                const index = orders.findIndex(o => String(o.id) === String(orderId));
+                if (index !== -1) {
+                    orders[index].trangThaiDonHang = 'đơn bị hủy';
+                    orders[index].shippingLocation = 'Đơn hàng đã bị hủy';
+                    localStorage.setItem('orders', JSON.stringify(orders));
+                    loadOrders();
+                }
+            }
+        }
+
+        function updateLoc(orderId) {
+            const newVal = document.getElementById(`loc-${orderId}`).value;
+            let orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const index = orders.findIndex(o => String(o.id) === String(orderId));
+            if (index !== -1) {
+                orders[index].shippingLocation = newVal;
+                localStorage.setItem('orders', JSON.stringify(orders));
+                alert('Đã cập nhật vị trí vận chuyển!');
+            }
+        }
+
+        // --- PRE-LOVED LOGIC ---
+        function loadPrelovedRequests() {
+            const items = JSON.parse(localStorage.getItem('user_preloved')) || [];
+            const tbody = document.getElementById('prelovedList');
+            tbody.innerHTML = '';
+
+            if (items.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-msg">Chưa có yêu cầu ký gửi nào</td></tr>';
+                return;
+            }
+
+            items.forEach((item, index) => {
+                const isApproved = item.seller && !item.seller.includes("Chờ duyệt");
+                const isRejected = item.seller && item.seller.includes("từ chối");
+                const isPending = !isApproved && !isRejected;
+                const tr = document.createElement('tr');
+                const evidenceHtml = `
+                    <div style="display:flex; gap:5px;">
+                        ${item.evidenceImages && item.evidenceImages.length > 0 ?
+                        `<button class="btn-action" style="background:#673ab7" onclick="viewEvidence(${index}, 'img')">Ảnh (${item.evidenceImages.length})</button>` : ''}
+                        ${item.evidenceVideo ?
+                        `<button class="btn-action" style="background:#ff9800" onclick="viewEvidence(${index}, 'vid')">Video</button>` : ''}
+                    </div>
+                `;
+
+                tr.innerHTML = `
+                    <td><img src="${item.images[0]}" width="40" style="border-radius:4px; margin-right:10px; vertical-align:middle;"> ${item.name}</td>
+                    <td>${item.condition}</td>
+                    <td>
+                        <span style="font-weight:bold; color: #27ae60;">${item.price}</span><br>
+                        ${item.sizes && item.sizes.length > 0 ? `<small>Size: ${item.sizes.join(', ')}</small><br>` : ''}
+                        ${item.colors && item.colors.length > 0 ? `<small>Màu: ${item.colors.join(', ')}</small>` : ''}
+                    </td>
+                    <td>${item.seller.split('(')[0]}</td>
+                    <td>${evidenceHtml || 'Không có'}</td>
+                    <td><span class="status ${isApproved ? 'approved' : (isRejected ? 'rejected' : 'pending')}">${isApproved ? 'Đã duyệt' : (isRejected ? 'Đã từ chối' : 'Chờ duyệt')}</span></td>
+                    <td>
+                        ${isPending ? `<button class="btn-action btn-approve" onclick="approvePreloved(${index})">Duyệt</button>` : ''}
+                        ${isPending ? `<button class="btn-action" style="background:#d63031" onclick="rejectPreloved(${index})">Từ chối</button>` : ''}
+                        <button class="btn-action" style="background:#6c757d; margin-left:5px;" onclick="deletePreloved(${index})">Xóa</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function viewEvidence(index, type) {
+            const items = JSON.parse(localStorage.getItem('user_preloved'));
+            const item = items[index];
+            const body = document.getElementById('evidenceBody');
+            body.innerHTML = '';
+
+            if (type === 'img') {
+                item.evidenceImages.forEach(src => {
+                    body.innerHTML += `<img src="${src}" alt="Evidence">`;
+                });
+            } else {
+                body.innerHTML = `<video src="${item.evidenceVideo}" controls style="width:100%; max-width:600px;"></video>`;
+            }
+            document.getElementById('evidenceModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('evidenceModal').style.display = 'none';
+        }
+
+        function approvePreloved(index) {
+            let items = JSON.parse(localStorage.getItem('user_preloved'));
+            items[index].seller = items[index].seller.split('(')[0].trim(); // Xóa chữ "Chờ duyệt"
+            localStorage.setItem('user_preloved', JSON.stringify(items));
+            alert("Sản phẩm đã được duyệt và sẽ hiển thị công khai!");
+            loadPrelovedRequests();
+        }
+
+        function rejectPreloved(index) {
+            let items = JSON.parse(localStorage.getItem('user_preloved'));
+            items[index].seller = items[index].seller.split('(')[0].trim() + " (Bị từ chối)";
+            localStorage.setItem('user_preloved', JSON.stringify(items));
+            alert("Đã từ chối yêu cầu ký gửi này.");
+            loadPrelovedRequests();
+        }
+
+        function deletePreloved(index) {
+            if (confirm("Bạn có chắc chắn muốn xóa yêu cầu này?")) {
+                let items = JSON.parse(localStorage.getItem('user_preloved'));
+                items.splice(index, 1);
+                localStorage.setItem('user_preloved', JSON.stringify(items));
+                loadPrelovedRequests();
+            }
+        }
+
+        // --- CHAT LOGIC ---
+        function loadAdminChat() {
+            const messages = JSON.parse(localStorage.getItem('shop_messages')) || [];
+            const chatWindow = document.getElementById('adminChatWindow');
+            chatWindow.innerHTML = '';
+
+            if (messages.length === 0) {
+                chatWindow.innerHTML = '<p style="text-align:center; color:#999;">Chưa có tin nhắn nào.</p>';
+                return;
+            }
+
+            messages.forEach(msg => {
+                const div = document.createElement('div');
+                div.className = `msg ${msg.role}`;
+                const senderName = msg.role === 'admin' ? 'Admin' : (msg.user || 'Khách hàng');
+                div.innerHTML = `<strong>${senderName}:</strong> ${msg.text} <span class="msg-time">${new Date(msg.time).toLocaleTimeString()}</span>`;
+                chatWindow.appendChild(div);
+            });
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        function sendAdminReply() {
+            const input = document.getElementById('adminReplyInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const messages = JSON.parse(localStorage.getItem('shop_messages')) || [];
+            messages.push({ role: 'admin', text: text, time: new Date().toISOString() });
+            localStorage.setItem('shop_messages', JSON.stringify(messages));
+
+            input.value = '';
+            loadAdminChat();
+        }
+
+        function clearChat() { if (confirm('Xóa toàn bộ tin nhắn?')) { localStorage.removeItem('shop_messages'); loadAdminChat(); } }
+
+        window.onload = function () {
+            loadOrders();
+            loadPrelovedRequests();
+            loadAdminChat();
+            setInterval(loadAdminChat, 2000);
+        };
+    </script>
+</body>
+
+</html>

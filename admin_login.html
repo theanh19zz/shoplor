@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Thế Anh Shop</title>
+    <link rel="icon" href="images/logowhite.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="Style/main.css">
+    <link rel="stylesheet" href="Style/login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f6f9;
+        }
+
+        .admin-badge {
+            background: #000;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <section id="login">
+        <div class="container">
+            <div style="text-align: center;">
+                <span class="admin-badge">QUẢN TRỊ VIÊN</span>
+            </div>
+            <h1 class="section-header">Đăng Nhập Admin</h1>
+            <div id="form">
+                <label for="adminUser">Tên đăng nhập</label>
+                <input type="text" id="adminUser" placeholder="Nhập: admin">
+
+                <label for="adminPass">Mật khẩu</label>
+                <input type="password" id="adminPass" placeholder="Nhập: 123456">
+
+                <span id="loginError" class="alert" style="display:none; color:red;">Sai tên đăng nhập hoặc mật khẩu!</span>
+
+                <div class="submit">
+                    <button id="btn-admin-login" onclick="adminLogin()">Đăng Nhập</button>
+                    <a href="index.html" id="signup">Về Trang Chủ Cửa Hàng</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function adminLogin() {
+            const user = document.getElementById('adminUser').value;
+            const pass = document.getElementById('adminPass').value;
+            const errorMsg = document.getElementById('loginError');
+
+            if (user === 'admin' && pass === '123456') {
+                sessionStorage.setItem('isAdminLoggedIn', 'true');
+                localStorage.setItem('isAdmin', 'true');
+                alert('Đăng nhập thành công!');
+                window.location.href = 'admin_dashboard.html';
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+
+</html>

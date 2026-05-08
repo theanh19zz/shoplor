@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ Sơ Cá Nhân | Thế Anh Shop</title>
+    <link rel="icon" href="images/logo1.png" type="image/x-icon">
+    <link rel="stylesheet" href="Style/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        .profile-section {
+            background-color: #f9f9f9;
+            padding: 60px 0;
+            min-height: 80vh;
+        }
+
+        .profile-card {
+            background: #fff;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .profile-header ion-icon {
+            font-size: 64px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .profile-header h1 {
+            font-size: 24px;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(218, 41, 28, 0.1);
+        }
+
+        .form-group input[readonly] {
+            background-color: #f4f4f4;
+            cursor: not-allowed;
+            color: #888;
+        }
+
+        .btn-update {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-update:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .back-home {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #666;
+            text-decoration: underline !important;
+        }
+        
+        .back-home-large {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            color: #333;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 18px;
+            transition: 0.3s;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+        
+        .back-home-large:hover {
+            color: var(--primary-color);
+            transform: translateX(-8px);
+        }
+        .order-history-section {
+            padding: 40px 0 20px 0;
+            background-color: #f9f9f9;
+        }
+
+        .order-card {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            text-align: left;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .shipping-status {
+            margin-top: 15px;
+            padding: 10px;
+            background: #e8f4fd;
+            border-radius: 6px;
+            color: #0056b3;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .shipping-status:hover {
+            background: #dbeaf8;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="container" id="header">
+        <div class="header_top">
+            <img src="images/logo_block.jpg" alt="logo" id="logo" onclick="window.location.href='index.html'"
+                style="cursor:pointer; width: 100px;">
+            <div class="header_actions">
+                <div id="display_login">
+                    <span id="user_name" style="font-weight: bold; margin-right: 10px;"></span>
+                    <a href="#" id="logout" onclick="logout();">
+                        <ion-icon name="log-out-outline"></ion-icon>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="profile-section">
+        <div class="container">
+            <div style="max-width: 600px; margin: 0 auto;">
+                <a href="index.html" class="back-home-large">
+                    <ion-icon name="arrow-back-outline" style="font-size: 24px;"></ion-icon> QUAY LẠI MUA SẮM
+                </a>
+            </div>
+            
+            <div class="profile-card">
+                <div class="profile-header">
+                    <ion-icon name="person-circle-outline"></ion-icon>
+                    <h1>Hồ sơ của tôi</h1>
+                    <p style="color: #888; font-size: 14px;">Cập nhật thông tin để thanh toán nhanh hơn</p>
+                </div>
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label>Địa chỉ Email (Cố định)</label>
+                        <input type="email" id="p-email" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Họ và tên</label>
+                        <input type="text" id="p-name" placeholder="VD: Nguyễn Văn A" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Số điện thoại</label>
+                        <input type="tel" id="p-phone" placeholder="VD: 0987654321" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Địa chỉ nhận hàng mặc định</label>
+                        <input type="text" id="p-address" placeholder="Số nhà, tên đường, Phường/Xã..." required>
+                    </div>
+                    <button type="submit" class="btn-update">CẬP NHẬT THÔNG TIN</button>
+                </form>
+
+                <!-- Section Đổi mật khẩu -->
+                <div style="margin-top: 30px; border-top: 1px dashed #eee; padding-top: 25px;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                        <ion-icon name="lock-closed-outline" style="font-size: 20px; color: #555;"></ion-icon>
+                        <h3 style="font-size: 16px; color: #333; margin: 0;">Bảo mật tài khoản</h3>
+                    </div>
+                    <button type="button" class="btn-update" style="background-color: #666; font-size: 14px; padding: 12px;" onclick="changePassword()">ĐỔI MẬT KHẨU</button>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+
+    <section class="order-history-section">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px;">
+                <div class="profile-card" style="margin: 0; max-width: none;">
+                    <div class="profile-header" style="margin-bottom: 20px;">
+                        <ion-icon name="cube-outline"></ion-icon>
+                        <h1>Lịch sử mua hàng</h1>
+                        <p style="color: #888; font-size: 14px;">Theo dõi tình trạng vận chuyển đơn hàng</p>
+                    </div>
+                    <div id="orderHistoryList">
+                        <!-- Orders will be rendered here -->
+                    </div>
+                </div>
+                
+                <div class="profile-card" style="margin: 0; max-width: none; height: fit-content;">
+                    <div class="profile-header" style="margin-bottom: 20px;">
+                        <ion-icon name="shirt-outline"></ion-icon>
+                        <h1>Dịch vụ ký gửi</h1>
+                        <p style="color: #888; font-size: 14px;">Gửi đồ Like-New của bạn cho Thế Anh Shop</p>
+                    </div>
+                    <div style="text-align: center; padding: 20px 0;">
+                        <p style="font-size: 14px; color: #666; margin-bottom: 20px; line-height: 1.5;">
+                            Bạn có đồ cũ còn mới? Hãy ký gửi để chúng tôi giúp bạn tìm chủ mới và nhận lại chi phí xứng đáng.
+                        </p>
+                        <button class="btn-update" onclick="window.location.href='sell-to-us.html'" style="background-color: #333;">
+                            <ion-icon name="add-circle-outline" style="font-size: 18px; vertical-align: middle;"></ion-icon> 
+                            GỬI ĐỒ NGAY
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>© 2026 Thế Anh Shop. Trang quản lý thông tin khách hàng.</p>
+        </div>
+    </footer>
+
+
+
+    <script src="JavaScript/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const email = localStorage.getItem('email');
+            if (!email || email === 'null') {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Tải dữ liệu hiện tại
+            const shopUsers = JSON.parse(localStorage.getItem('shop_users')) || [];
+            const user = shopUsers.find(u => u.email === email);
+
+            if (user) {
+                document.getElementById('p-email').value = user.email;
+                document.getElementById('p-name').value = user.name || '';
+                document.getElementById('p-phone').value = (user.phone && user.phone !== 'Chưa cập nhật') ? user.phone : '';
+                document.getElementById('p-address').value = (user.address && user.address !== 'Chưa cập nhật') ? user.address : '';
+            }
+
+            // Xử lý lưu thông tin
+            document.getElementById('profileForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                const name = document.getElementById('p-name').value.trim();
+                const phone = document.getElementById('p-phone').value.trim();
+                const address = document.getElementById('p-address').value.trim();
+
+                let users = JSON.parse(localStorage.getItem('shop_users')) || [];
+                const index = users.findIndex(u => u.email === email);
+
+                if (index !== -1) {
+                    users[index].name = name;
+                    users[index].phone = phone;
+                    users[index].address = address;
+                    localStorage.setItem('shop_users', JSON.stringify(users));
+                    alert('Cập nhật thông tin thành công!');
+                    
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const redirect = urlParams.get('redirect');
+                    window.location.href = redirect || 'index.html';
+                }
+            });
+
+            // Lấy danh sách đơn hàng
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const userOrders = orders.filter(o => 
+                (o.customerInfo && o.customerInfo.email === email) || 
+                (o.khachHang && o.khachHang.email === email) ||
+                (o.email === email)
+            ).reverse();
+            const orderList = document.getElementById('orderHistoryList');
+
+            if (userOrders.length === 0) {
+                orderList.innerHTML = '<p style="text-align:center; color:#888;">Bạn chưa có đơn hàng nào.</p>';
+            } else {
+                userOrders.forEach(o => {
+                    let itemsHtml = (o.items || o.sanPham || []).map(item => `
+                        <div style="font-size: 13px; margin-bottom: 5px;">
+                            • ${item.name || item.ten} (SL: ${item.quantity || item.soLuong})
+                        </div>
+                    `).join('');
+
+                    let statusColor = '#f39c12';
+                    let statusText = 'Tạo mới';
+                    if (o.trangThaiDonHang === 'đang chuẩn bị hàng' || o.trangThaiDonHang === 'đã xác nhận') {
+                        statusColor = 'blue';
+                        statusText = 'Đang chuẩn bị hàng';
+                    } else if (o.trangThaiDonHang === 'đang vận chuyển') {
+                        statusColor = '#2980b9';
+                        statusText = 'Đang vận chuyển';
+                    } else if (o.trangThaiDonHang === 'đã giao hàng') {
+                        statusColor = '#27ae60';
+                        statusText = 'Đã giao hàng';
+                    } else if (o.trangThaiDonHang === 'đơn bị hủy') {
+                        statusColor = 'red';
+                        statusText = 'Đơn bị hủy';
+                    }
+
+                    let trackingCursor = o.trangThaiDonHang === 'đơn bị hủy' ? 'default' : 'pointer';
+                    let trackingOnClick = o.trangThaiDonHang === 'đơn bị hủy' ? '' : `onclick="window.location.href='order-tracking.html?id=${o.id}'"`;
+                    let trackingAction = o.trangThaiDonHang === 'đơn bị hủy' ? '' : `<div style="font-size: 13px; color: #0056b3; font-weight: bold;">Theo dõi đơn hàng &gt;</div>`;
+                    let trackingIcon = o.trangThaiDonHang === 'đơn bị hủy' ? 'close-circle-outline' : 'location-outline';
+
+                    orderList.innerHTML += `
+                        <div class="order-card">
+                            <div class="order-header">
+                                <strong>Mã đơn: #${o.id}</strong>
+                                <span>${o.ngayDat || o.date}</span>
+                            </div>
+                            <div style="margin-bottom: 10px;">${itemsHtml}</div>
+                            <div style="font-weight: bold; color: var(--primary-color);">Tổng tiền: ${o.tongCong ? o.tongCong.toLocaleString() + 'đ' : (o.total || '0đ')}</div>
+                            <div style="margin-top: 10px; font-size: 14px;">Trạng thái: <span style="color: ${statusColor}; font-weight: bold;">${statusText}</span></div>
+                            <div class="shipping-status" style="cursor: ${trackingCursor};" ${trackingOnClick}>
+                                <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+                                    <ion-icon name="${trackingIcon}"></ion-icon> Trạng thái đơn: ${o.shippingLocation || 'Đang chuẩn bị hàng'}
+                                </div>
+                                ${trackingAction}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        });
+
+
+    </script>
+    <script>
+        function changePassword() {
+            const currentPass = prompt("Vui lòng nhập mật khẩu hiện tại của bạn:");
+            if (!currentPass) return;
+
+            const email = localStorage.getItem('email');
+            let users = JSON.parse(localStorage.getItem('shop_users')) || [];
+            const userIndex = users.findIndex(u => u.email === email);
+
+            if (userIndex === -1 || users[userIndex].password !== currentPass) {
+                alert("Mật khẩu hiện tại không chính xác!");
+                return;
+            }
+
+            const newPass = prompt("Vui lòng nhập mật khẩu mới (Tối thiểu 8 ký tự):");
+            if (!newPass) return;
+
+            if (newPass.length < 8) {
+                alert("Mật khẩu mới phải từ 8 ký tự trở lên!");
+                return;
+            }
+
+            const confirmPass = prompt("Vui lòng xác nhận mật khẩu mới:");
+            if (newPass !== confirmPass) {
+                alert("Xác nhận mật khẩu không khớp!");
+                return;
+            }
+
+            users[userIndex].password = newPass;
+            localStorage.setItem('shop_users', JSON.stringify(users));
+            localStorage.setItem('password', newPass); // Cập nhật mật khẩu trong session hiện tại
+            alert("Đổi mật khẩu thành công!");
+        }
+    </script>
+</body>
+
+</html>

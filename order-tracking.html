@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theo dõi đơn hàng | Thế Anh Shop</title>
+    <link rel="icon" href="images/logo1.png" type="image/x-icon">
+    <link rel="stylesheet" href="Style/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        .tracking-page {
+            background-color: #f9f9f9;
+            padding: 40px 0;
+            min-height: 80vh;
+        }
+
+        .tracking-container {
+            background: #fff;
+            max-width: 1000px;
+            margin: 0 auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        /* Modal styles converted to page styles */
+        .tracking-header {
+            background: #ed1c24; /* Best Express Red */
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .tracking-header h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 500;
+        }
+        .back-btn {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 15px;
+        }
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+        .tracking-body {
+            padding: 30px;
+            display: flex;
+            gap: 30px;
+        }
+        .tracking-info-col {
+            flex: 1;
+        }
+        .tracking-map-col {
+            width: 350px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        @media (max-width: 768px) {
+            .tracking-body {
+                flex-direction: column;
+            }
+            .tracking-map-col {
+                width: 100%;
+                height: 300px;
+            }
+        }
+        .tracking-route {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+        .tracking-route .point {
+            text-align: center;
+            flex: 1;
+        }
+        .tracking-route .point h4 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+        .tracking-route .point p {
+            margin: 5px 0 0 0;
+            font-size: 13px;
+            color: #888;
+            word-break: break-word;
+        }
+        .tracking-route .line {
+            flex: 1;
+            height: 2px;
+            background: #ddd;
+            margin: 0 15px;
+            position: relative;
+        }
+        .tracking-route .line::after {
+            content: '>';
+            position: absolute;
+            top: -12px;
+            right: -5px;
+            color: #ddd;
+            font-size: 20px;
+            background: white;
+            padding-left: 5px;
+        }
+        .tracking-statuses {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+        .tracking-status-item {
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .tracking-status-item.active {
+            color: #ed1c24;
+            font-weight: bold;
+        }
+        .tracking-status-item ion-icon {
+            font-size: 18px;
+        }
+        .timeline {
+            position: relative;
+            padding-left: 20px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #ddd;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -25px;
+            top: 2px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ddd;
+            border: 2px solid #fff;
+        }
+        .timeline-item.active::before {
+            background: #ed1c24;
+        }
+        .timeline-content {
+            display: flex;
+            gap: 15px;
+        }
+        .timeline-date {
+            width: 100px;
+            font-size: 14px;
+            color: #888;
+        }
+        .timeline-date strong {
+            display: block;
+            color: #333;
+        }
+        .timeline-desc {
+            flex: 1;
+            font-size: 15px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="container" id="header">
+        <div class="header_top">
+            <img src="images/logo_block.jpg" alt="logo" id="logo" onclick="window.location.href='index.html'"
+                style="cursor:pointer; width: 100px;">
+            <div class="header_actions">
+                <div id="display_login">
+                    <span id="user_name" style="font-weight: bold; margin-right: 10px;"></span>
+                    <a href="#" id="logout" onclick="logout();">
+                        <ion-icon name="log-out-outline"></ion-icon>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="tracking-page">
+        <div class="container">
+            <div class="tracking-container">
+                <div class="tracking-header">
+                    <h2>Chi tiết vận đơn: <span id="pageOrderId">Đang tải...</span></h2>
+                    <div style="display: flex; gap: 20px;">
+                        <a href="index.html" class="back-btn"><ion-icon name="home-outline"></ion-icon> Trang Chủ</a>
+                        <a href="profile.html" class="back-btn"><ion-icon name="arrow-back-outline"></ion-icon> Quay lại lịch sử</a>
+                    </div>
+                </div>
+                <div class="tracking-body" id="trackingBody" style="display: none;">
+                    <div class="tracking-info-col">
+                        <div class="tracking-route">
+                            <div class="point">
+                                <h4>Hà Nội</h4>
+                                <p>Kho tổng Thế Anh Shop</p>
+                            </div>
+                            <div class="line"></div>
+                            <div class="point">
+                                <h4 id="pageReceiverCity">Đang tải...</h4>
+                                <p id="pageReceiverAddress">Đang tải...</p>
+                            </div>
+                        </div>
+                        
+                        <div class="tracking-statuses">
+                            <div class="tracking-status-item" id="status-1"><ion-icon name="document-text-outline"></ion-icon> Tạo mới</div>
+                            <div class="tracking-status-item" id="status-2"><ion-icon name="cube-outline"></ion-icon> Đang chuẩn bị hàng</div>
+                            <div class="tracking-status-item" id="status-3"><ion-icon name="airplane-outline"></ion-icon> Đang vận chuyển</div>
+                            <div class="tracking-status-item" id="status-4"><ion-icon name="car-outline"></ion-icon> Đang giao hàng</div>
+                            <div class="tracking-status-item" id="status-5"><ion-icon name="checkmark-circle-outline"></ion-icon> Đã giao hàng</div>
+                        </div>
+
+                        <!-- Logistics Details -->
+                        <div id="logisticsDetails" style="background: #fdf2f2; padding: 15px; border-radius: 6px; margin-bottom: 25px; border-left: 4px solid #ed1c24; display: none;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span style="font-size: 14px; color: #666;">Quãng đường giao hàng:</span>
+                                <strong id="displayDistance" style="color: #ed1c24;">0 km</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="font-size: 14px; color: #666;">Thời gian dự kiến:</span>
+                                <strong id="displayEstTime">Đang tính toán...</strong>
+                            </div>
+                        </div>
+
+                        <div class="timeline" id="pageTimeline">
+                            <!-- Timeline items will be injected here -->
+                        </div>
+                        <div id="customerActions" style="margin-top: 30px; display: none; gap: 15px;">
+                            <button onclick="confirmReceived()" style="flex:1; padding:12px; background:#27ae60; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold; font-size:15px; transition:0.3s;">Đã nhận được hàng</button>
+                            <button onclick="requestSupport()" style="flex:1; padding:12px; background:#e74c3c; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold; font-size:15px; transition:0.3s;">Chưa nhận được hàng</button>
+                        </div>
+                    </div>
+                    <div class="tracking-map-col">
+                        <div id="trackingMap" style="width: 100%; height: 100%; min-height: 400px;"></div>
+                    </div>
+                </div>
+                <div id="errorMsg" style="padding: 50px; text-align: center; color: #888; font-size: 18px; display: none;">
+                    Không tìm thấy thông tin vận đơn.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>© 2026 Thế Anh Shop. Trang quản lý thông tin khách hàng.</p>
+        </div>
+    </footer>
+
+    <!-- Review Modal -->
+    <div id="reviewModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:2000; align-items:center; justify-content:center;">
+        <div style="background:#fff; padding:30px; border-radius:8px; width:90%; max-width:400px; text-align:center; box-shadow:0 5px 20px rgba(0,0,0,0.2);">
+            <h3 style="margin-bottom:15px; color:#27ae60; font-size:20px;">Đánh giá đơn hàng</h3>
+            <p style="color:#666; font-size:14px;">Vui lòng để lại đánh giá của bạn về sản phẩm và dịch vụ.</p>
+            <div style="font-size:35px; color:#f39c12; margin:15px 0; cursor:pointer;">★★★★★</div>
+            <textarea id="reviewText" rows="4" style="width:100%; border:1px solid #ddd; border-radius:4px; padding:12px; margin-bottom:15px; font-family:inherit; outline:none;" placeholder="Tuyệt vời..."></textarea>
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <button onclick="submitReview()" style="padding:10px 20px; background:#27ae60; color:#fff; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">Gửi đánh giá</button>
+                <button onclick="document.getElementById('reviewModal').style.display='none'" style="padding:10px 20px; background:#eee; color:#333; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Support Modal -->
+    <div id="supportModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:2000; align-items:center; justify-content:center;">
+        <div style="background:#fff; padding:30px; border-radius:8px; width:90%; max-width:400px; box-shadow:0 5px 20px rgba(0,0,0,0.2);">
+            <h3 style="margin-bottom:15px; color:#e74c3c; text-align:center; font-size:20px;">Yêu cầu hỗ trợ</h3>
+            <p style="color:#666; font-size:14px; text-align:center;">Xin lỗi vì sự bất tiện này. Vui lòng cho chúng tôi biết vấn đề bạn gặp phải.</p>
+            <textarea id="supportText" rows="4" style="width:100%; border:1px solid #ddd; border-radius:4px; padding:12px; margin:20px 0; font-family:inherit; outline:none;" placeholder="Ví dụ: Đơn hàng giao quá chậm, bị thất lạc, hỏng hóc..."></textarea>
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <button onclick="submitSupport()" style="padding:10px 20px; background:#e74c3c; color:#fff; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">Gửi yêu cầu</button>
+                <button onclick="document.getElementById('supportModal').style.display='none'" style="padding:10px 20px; background:#eee; color:#333; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="JavaScript/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('id');
+
+            if (!orderId) {
+                document.getElementById('errorMsg').style.display = 'block';
+                return;
+            }
+
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const order = orders.find(o => o.id == orderId);
+
+            if (!order) {
+                document.getElementById('errorMsg').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('trackingBody').style.display = 'flex';
+            document.getElementById('pageOrderId').textContent = orderId;
+            
+            // Extract district/city from address
+            let addrRaw = (order.customerInfo && (order.customerInfo.diaChi || order.customerInfo.address)) || 
+                         (order.khachHang && (order.khachHang.diaChi || order.khachHang.address)) || 
+                         order.address || order.diaChi || '';
+            let address = addrRaw.trim() !== '' ? addrRaw : 'Chưa cập nhật địa chỉ';
+            let city = 'Nơi nhận';
+            if (address !== 'Chưa cập nhật địa chỉ') {
+                let parts = address.split(',');
+                if (parts.length >= 2) {
+                    let quanHuyen = parts[parts.length - 2].trim();
+                    let tinhThanh = parts[parts.length - 1].trim();
+                    city = quanHuyen + ', ' + tinhThanh; // Khu vực: Quận/Huyện, Tỉnh/Thành
+                } else {
+                    city = address;
+                }
+            }
+            
+            document.getElementById('pageReceiverCity').textContent = city;
+            document.getElementById('pageReceiverAddress').textContent = address;
+
+            // Cập nhật thông tin quãng đường và thời gian (ẩn hiện sẽ do initTrackingMap kiểm soát)
+            if (order.distance) {
+                document.getElementById('displayDistance').textContent = order.distance;
+                document.getElementById('displayEstTime').textContent = order.thoiGianDuKien || 'N/A';
+            }
+
+            const timeline = document.getElementById('pageTimeline');
+            timeline.innerHTML = '';
+            
+            let currentStatus = order.trangThaiDonHang || 'tạo mới';
+            let locationDesc = order.shippingLocation || 'Đang chuẩn bị hàng';
+            
+            document.querySelectorAll('.tracking-status-item').forEach(el => el.classList.remove('active'));
+
+            if (currentStatus === 'đã giao hàng') {
+                document.getElementById('status-5').classList.add('active');
+                document.getElementById('customerActions').style.display = 'flex';
+            } else if (currentStatus === 'đang giao hàng') {
+                document.getElementById('status-4').classList.add('active');
+            } else if (currentStatus === 'đang vận chuyển') {
+                document.getElementById('status-3').classList.add('active');
+            } else if (currentStatus === 'đang chuẩn bị hàng' || currentStatus === 'chờ xác nhận') {
+                document.getElementById('status-2').classList.add('active');
+            } else {
+                document.getElementById('status-1').classList.add('active');
+            }
+
+            let dateObj = new Date();
+            let dateStr = dateObj.toLocaleDateString('vi-VN');
+            let timeStr = dateObj.getHours() + ':' + (dateObj.getMinutes() < 10 ? '0' : '') + dateObj.getMinutes();
+
+            let orderDateObj = new Date();
+            if (order.ngayDat) {
+                // handle sv-SE format "2026-05-04 01:29:02"
+                orderDateObj = new Date(order.ngayDat.replace(' ', 'T'));
+            } else if (order.date) {
+                orderDateObj = new Date(order.date);
+            }
+            if (isNaN(orderDateObj.getTime())) orderDateObj = new Date();
+
+            let createdDateStr = orderDateObj.toLocaleDateString('vi-VN');
+            let createdTimeStr = orderDateObj.getHours() + ':' + (orderDateObj.getMinutes() < 10 ? '0' : '') + orderDateObj.getMinutes();
+
+            let steps = [];
+            
+            if (order.trackingHistory && order.trackingHistory.length > 0) {
+                // Generate steps from tracking history
+                // Base step: Order created
+                steps.push({ time: createdTimeStr, dateStr: createdDateStr, desc: 'Tạo đơn hàng thành công' });
+                
+                // Add history steps
+                order.trackingHistory.forEach((historyItem, index) => {
+                    let hDateObj = new Date(historyItem.time);
+                    if (isNaN(hDateObj.getTime())) hDateObj = new Date();
+                    
+                    let hDateStr = hDateObj.toLocaleDateString('vi-VN');
+                    let hTimeStr = hDateObj.getHours() + ':' + (hDateObj.getMinutes() < 10 ? '0' : '') + hDateObj.getMinutes();
+                    
+                    let desc = historyItem.location || historyItem.status;
+                    let isActive = (index === order.trackingHistory.length - 1);
+                    
+                    steps.push({ time: hTimeStr, dateStr: hDateStr, desc: desc, active: isActive });
+                });
+                
+                // Reverse steps so newest is on top
+                steps.reverse();
+            } else {
+                // Fallback for old orders without tracking history
+                if (currentStatus === 'tạo mới') {
+                    steps = [
+                        { time: createdTimeStr, dateStr: createdDateStr, desc: 'Tạo đơn hàng thành công', active: true }
+                    ];
+                } else if (currentStatus === 'đang chuẩn bị hàng' || currentStatus === 'chờ xác nhận') {
+                    steps = [
+                        { time: timeStr, dateStr: dateStr, desc: 'Đang chuẩn bị hàng' + (locationDesc && locationDesc !== 'Đang chuẩn bị hàng' ? ` (${locationDesc})` : ''), active: true },
+                        { time: createdTimeStr, dateStr: createdDateStr, desc: 'Tạo đơn hàng thành công' }
+                    ];
+                } else if (currentStatus === 'đang vận chuyển' || currentStatus === 'đang giao hàng') {
+                    steps = [
+                        { time: timeStr, dateStr: dateStr, desc: (currentStatus === 'đang giao hàng' ? 'Đang giao hàng' : 'Đang vận chuyển') + (locationDesc ? ` (${locationDesc})` : ''), active: true },
+                        { time: '08:00', dateStr: dateStr, desc: 'Đã xuất kho để giao cho đơn vị vận chuyển' },
+                        { time: createdTimeStr, dateStr: createdDateStr, desc: 'Tạo đơn hàng thành công' }
+                    ];
+                } else if (currentStatus === 'đã giao hàng') {
+                    steps = [
+                        { time: timeStr, dateStr: dateStr, desc: 'Đã giao hàng thành công' + (locationDesc && locationDesc !== 'Đã giao hàng thành công' ? ` (${locationDesc})` : ''), active: true },
+                        { time: '08:00', dateStr: dateStr, desc: 'Đã xuất kho để giao cho đơn vị vận chuyển' },
+                        { time: createdTimeStr, dateStr: createdDateStr, desc: 'Tạo đơn hàng thành công' }
+                    ];
+                } else {
+                    steps = [
+                        { time: timeStr, dateStr: dateStr, desc: locationDesc, active: true },
+                        { time: createdTimeStr, dateStr: createdDateStr, desc: 'Tạo đơn hàng thành công' }
+                    ];
+                }
+            }
+
+            steps.forEach(step => {
+                timeline.innerHTML += `
+                    <div class="timeline-item ${step.active ? 'active' : ''}">
+                        <div class="timeline-content">
+                            <div class="timeline-date">
+                                <strong>${step.time}</strong>
+                                <span>${step.dateStr}</span>
+                            </div>
+                            <div class="timeline-desc" style="${step.active ? 'color: #ed1c24; font-weight: 500;' : ''}">
+                                ${step.desc}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // --- MAP INTEGRATION ---
+            const SHOP_COORDS = { lat: 21.043685, lng: 105.764835 }; // 83 Phú Diễn
+            let map, shopMarker, customerMarker, deliveryLine;
+
+            function initTrackingMap() {
+                map = L.map('trackingMap').setView([SHOP_COORDS.lat, SHOP_COORDS.lng], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+
+                shopMarker = L.marker([SHOP_COORDS.lat, SHOP_COORDS.lng]).addTo(map).bindPopup("Thế Anh Shop (83 Phú Diễn)");
+                customerMarker = L.marker([0, 0]).addTo(map);
+                deliveryLine = L.polyline([], { color: '#27ae60', weight: 6, opacity: 0.8 }).addTo(map);
+
+                // Chỉ vẽ đường đi và hiện thông tin quãng đường khi đơn hàng đã bắt đầu vận chuyển
+                const showRouteStatuses = ['đang vận chuyển', 'đang giao hàng', 'đã giao hàng'];
+                if (address !== 'Chưa cập nhật địa chỉ' && showRouteStatuses.includes(currentStatus)) {
+                    geocodeAndShowRoute(address);
+                    if (order.distance) {
+                        document.getElementById('logisticsDetails').style.display = 'block';
+                    }
+                } else {
+                    // Nếu chưa vận chuyển, vẫn hiện 2 marker để khách hàng thấy điểm đi/đến
+                    if (address !== 'Chưa cập nhật địa chỉ') {
+                        geocodeOnly(address);
+                    }
+                }
+            }
+
+            async function geocodeOnly(addr) {
+                try {
+                    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addr)}&countrycodes=vn&limit=1`);
+                    const data = await res.json();
+                    if (data && data.length > 0) {
+                        const destCoords = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+                        customerMarker.setLatLng([destCoords.lat, destCoords.lng]).bindPopup("Địa chỉ nhận hàng");
+                        map.fitBounds(new L.featureGroup([shopMarker, customerMarker]).getBounds().pad(0.3));
+                    }
+                } catch (e) {}
+            }
+
+            async function geocodeAndShowRoute(addr) {
+                try {
+                    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addr)}&countrycodes=vn&limit=1`);
+                    const data = await res.json();
+                    if (data && data.length > 0) {
+                        const destCoords = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+                        customerMarker.setLatLng([destCoords.lat, destCoords.lng]).bindPopup("Địa chỉ nhận hàng").openPopup();
+                        
+                        // Get routing from OSRM
+                        const routeRes = await fetch(`https://router.project-osrm.org/route/v1/driving/${SHOP_COORDS.lng},${SHOP_COORDS.lat};${destCoords.lng},${destCoords.lat}?overview=full&geometries=geojson`);
+                        const routeData = await routeRes.json();
+                        
+                        if (routeData.code === 'Ok' && routeData.routes.length > 0) {
+                            const coords = routeData.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+                            deliveryLine.setLatLngs(coords);
+                            
+                            const group = new L.featureGroup([shopMarker, customerMarker]);
+                            map.fitBounds(group.getBounds().pad(0.2));
+                        } else {
+                            // Straight line fallback
+                            deliveryLine.setLatLngs([[SHOP_COORDS.lat, SHOP_COORDS.lng], [destCoords.lat, destCoords.lng]]);
+                            map.fitBounds(new L.featureGroup([shopMarker, customerMarker]).getBounds().pad(0.2));
+                        }
+                    }
+                } catch (err) {
+                    console.error("Lỗi bản đồ:", err);
+                }
+            }
+
+            // Small timeout to ensure container is ready
+            setTimeout(initTrackingMap, 300);
+        });
+
+        function confirmReceived() {
+            document.getElementById('reviewModal').style.display = 'flex';
+        }
+
+        function submitReview() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('id');
+            let orders = JSON.parse(localStorage.getItem('orders')) || [];
+            let order = orders.find(o => String(o.id) === String(orderId));
+            
+            if (order) {
+                order.trangThaiDonHang = 'đã giao hàng';
+                order.shippingLocation = 'Đã giao hàng thành công';
+                order.review = document.getElementById('reviewText').value;
+                localStorage.setItem('orders', JSON.stringify(orders));
+                
+                const modalContent = document.querySelector('#reviewModal > div');
+                modalContent.innerHTML = `
+                    <div style="font-size: 60px; color: #27ae60; margin-bottom: 10px;"><ion-icon name="checkmark-circle"></ion-icon></div>
+                    <h3 style="color: #27ae60; font-size: 22px; margin-bottom: 15px;">Đánh giá thành công!</h3>
+                    <p style="color: #444; font-size: 16px; margin-bottom: 25px; line-height: 1.6;">Cảm ơn bạn đã tin tưởng và đặt hàng tại Cửa Hàng chúng tôi.</p>
+                    <button onclick="window.location.href='index.html'" style="padding: 12px 25px; background: #27ae60; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 15px; width: 100%; transition: background 0.3s;" onmouseover="this.style.background='#219653'" onmouseout="this.style.background='#27ae60'">Về Trang Chủ</button>
+                `;
+            }
+        }
+
+        function requestSupport() {
+            document.getElementById('supportModal').style.display = 'flex';
+        }
+
+        function submitSupport() {
+            const text = document.getElementById('supportText').value.trim();
+            if(!text) {
+                alert('Vui lòng nhập nội dung hỗ trợ!');
+                return;
+            }
+            alert('Yêu cầu hỗ trợ của bạn đã được gửi đến Admin. Chúng tôi sẽ liên hệ lại sớm nhất!');
+            document.getElementById('supportModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

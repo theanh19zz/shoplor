@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Mã Giảm Giá - Admin</title>
+    <link rel="stylesheet" href="Style/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .admin-header {
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .container {
+            width: 95%;
+            margin: 30px auto;
+        }
+
+        .form-section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: #28a745;
+            color: #fff;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: #fff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #666;
+            font-weight: bold;
+        }
+
+        .nav-link.active {
+            color: #333;
+            border-bottom: 2px solid #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-header">
+        <div class="logo">
+            <h3>THE ANH SHOP - ADMIN</h3>
+        </div>
+        <nav style="display: flex; gap: 20px; align-items: center;">
+            <a href="admin_orders.html" class="nav-link">Đơn hàng</a>
+            <a href="admin_discounts.html" class="nav-link active">Mã giảm giá</a>
+        </nav>
+        <div>
+            <span>Xin chào, Admin</span>
+            <button class="btn btn-danger" style="padding: 5px 10px;" onclick="logoutAdmin()">Đăng Xuất</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>🏷️ Quản Lý Mã Giảm Giá</h2>
+
+        <div class="form-section">
+            <h3>Thêm mã mới</h3>
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; align-items: end;">
+                <div class="form-group">
+                    <label>Mã (Code)</label>
+                    <input type="text" id="newCode" placeholder="Ví dụ: SUMMER20">
+                </div>
+                <div class="form-group">
+                    <label>Loại</label>
+                    <select id="newType">
+                        <option value="percent">Phần trăm (%)</option>
+                        <option value="fixed">Số tiền cố định (đ)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Giá trị</label>
+                    <input type="number" id="newValue" placeholder="Ví dụ: 10 hoặc 50000">
+                </div>
+                <div class="form-group">
+                    <label>Đơn tối thiểu</label>
+                    <input type="number" id="newMinOrder" value="0">
+                </div>
+                <div class="form-group">
+                    <label>Giới hạn sử dụng</label>
+                    <input type="number" id="newUsageLimit" value="100">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" style="width: 100%;" onclick="addDiscount()">Thêm mã</button>
+                </div>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Mã</th>
+                    <th>Loại</th>
+                    <th>Giá trị</th>
+                    <th>Đơn tối thiểu</th>
+                    <th>Lượt dùng (Đã dùng/Tổng)</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody id="discountList"></tbody>
+        </table>
+    </div>
+
+    <script>
+        if (!sessionStorage.getItem('isAdminLoggedIn')) window.location.href = 'admin_login.html';
+        function logoutAdmin() { sessionStorage.removeItem('isAdminLoggedIn'); window.location.href = 'admin_login.html'; }
+
+        const DEFAULT_DISCOUNTS = [
+            { code: "SAVE10", type: "percent", value: 10, minOrder: 0, usageLimit: 100, usedCount: 0 },
+            { code: "THEANH36", type: "fixed", value: 360000, minOrder: 0, usageLimit: 50, usedCount: 0 }
+        ];
+
+        function loadDiscounts() {
+            let discounts = JSON.parse(localStorage.getItem('shop_discounts'));
+            if (!discounts) {
+                discounts = DEFAULT_DISCOUNTS;
+                localStorage.setItem('shop_discounts', JSON.stringify(discounts));
+            }
+
+            const tbody = document.getElementById('discountList');
+            tbody.innerHTML = '';
+            discounts.forEach((d, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-weight:bold;">${d.code}</td>
+                    <td>${d.type === 'percent' ? 'Phần trăm' : 'Cố định'}</td>
+                    <td>${d.type === 'percent' ? d.value + '%' : d.value.toLocaleString('vi-VN') + 'đ'}</td>
+                    <td>${d.minOrder.toLocaleString('vi-VN')}đ</td>
+                    <td>${d.usedCount || 0} / ${d.usageLimit === 999 ? '∞' : d.usageLimit}</td>
+                    <td><button class="btn btn-danger" style="padding: 5px 10px;" onclick="deleteDiscount(${i})">Xóa</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addDiscount() {
+            const code = document.getElementById('newCode').value.trim().toUpperCase();
+            const type = document.getElementById('newType').value;
+            const value = parseFloat(document.getElementById('newValue').value);
+            const minOrder = parseFloat(document.getElementById('newMinOrder').value) || 0;
+            const usageLimit = parseInt(document.getElementById('newUsageLimit').value) || 999;
+
+            if (!code || isNaN(value)) return alert("Vui lòng nhập đầy đủ thông tin!");
+
+            let discounts = JSON.parse(localStorage.getItem('shop_discounts')) || [];
+            if (discounts.some(d => d.code === code)) return alert("Mã này đã tồn tại!");
+
+            discounts.push({ code, type, value, minOrder, usageLimit, usedCount: 0 });
+            localStorage.setItem('shop_discounts', JSON.stringify(discounts));
+            loadDiscounts();
+
+            document.getElementById('newCode').value = '';
+            document.getElementById('newValue').value = '';
+        }
+
+        function deleteDiscount(i) {
+            if (confirm("Xóa mã giảm giá này?")) {
+                let discounts = JSON.parse(localStorage.getItem('shop_discounts'));
+                discounts.splice(i, 1);
+                localStorage.setItem('shop_discounts', JSON.stringify(discounts));
+                loadDiscounts();
+            }
+        }
+
+        window.onload = loadDiscounts;
+    </script>
+</body>
+
+</html>

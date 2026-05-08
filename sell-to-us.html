@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gửi Đồ Like-New | TA FashionStyle</title>
+    <link rel="stylesheet" href="Style/main.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        .sell-hero {
+            text-align: center;
+            padding: 80px 20px;
+            background: #f8f8f8;
+        }
+
+        .sell-form-container {
+            max-width: 800px;
+            margin: -60px auto 100px;
+            background: #fff;
+            padding: 40px;
+            border-radius: 4px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 2px;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #000;
+        }
+
+        .media-uploader {
+            border: 2px dashed #e0e0e0;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .media-uploader:hover {
+            border-color: #000;
+            background: #fafafa;
+        }
+
+        .preview-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .preview-item {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+
+        .preview-item img,
+        .preview-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-submit {
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 16px;
+            width: 100%;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .btn-submit:hover {
+            background: #333;
+        }
+
+        #success-msg {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-weight: 500;
+        }
+        /* User Requests Section */
+        .user-requests-section {
+            max-width: 800px;
+            margin: 0 auto 100px;
+        }
+
+        .user-requests-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .request-card {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 20px;
+            transition: 0.3s;
+        }
+
+        .request-card:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .request-img {
+            width: 100px;
+            height: 100px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .request-img img, .request-img video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .request-info {
+            flex: 1;
+        }
+
+        .request-info h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .request-info p {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-Pending { background: #fff3cd; color: #856404; }
+        .status-Approved { background: #d4edda; color: #155724; }
+        .status-Rejected { background: #f8d7da; color: #721c24; }
+        .status-received { background: #cce5ff; color: #004085; }
+        .status-paid { background: #e2e3e5; color: #383d41; }
+
+        .balance-card {
+            background: linear-gradient(135deg, #097a6e 0%, #0ec1ae 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 20px rgba(9, 122, 110, 0.2);
+        }
+
+        .balance-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .balance-amount {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .btn-withdraw {
+            background: white;
+            color: #097a6e;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-withdraw:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+        @media (max-width: 600px) {
+            .request-card { flex-direction: column; }
+            .request-img { width: 100%; height: 150px; }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="container" id="header">
+        <div class="header_top" style="justify-content: center;">
+            <img src="images/logo_block.jpg" alt="logo" style="width: 120px; cursor: pointer;"
+                onclick="location.href='index.html'">
+        </div>
+    </header>
+
+    <div class="sell-hero">
+        <h1>Gửi đồ Like-New cho Shop</h1>
+        <p style="color: #666; margin-top: 10px; font-weight: 300;">Kéo dài vòng đời sản phẩm cùng Thế Anh Shop.</p>
+    </div>
+
+    <div class="sell-form-container">
+        <div style="margin-bottom: 20px;">
+            <a href="javascript:history.back()" style="display: inline-flex; align-items: center; gap: 8px; color: #555; text-decoration: none; font-weight: 500; font-size: 14px; transition: 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#555'">
+                <ion-icon name="arrow-back-outline" style="font-size: 18px;"></ion-icon> Quay lại
+            </a>
+        </div>
+        <form id="resellForm">
+            <div class="form-section-title">Thông tin liên hệ</div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>Họ và tên *</label>
+                    <input type="text" id="cName" placeholder="Nhập họ tên của bạn" required>
+                </div>
+                <div class="form-group">
+                    <label>Số điện thoại *</label>
+                    <input type="tel" id="cPhone" placeholder="Nhập số điện thoại" required>
+                </div>
+            </div>
+
+            <div class="form-section-title">Thông tin sản phẩm</div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>Tên sản phẩm *</label>
+                    <input type="text" id="pName" list="purchasedProductsList" placeholder="Nhập tên sản phẩm hoặc chọn từ lịch sử" required>
+                    <datalist id="purchasedProductsList">
+                        <!-- Suggestions will be added here by JS -->
+                    </datalist>
+                </div>
+                <div class="form-group">
+                    <label>Thương hiệu *</label>
+                    <input type="text" id="pBrand" placeholder="VD: Uniqlo / Zara" required>
+                </div>
+            </div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>Tình trạng *</label>
+                    <select id="pCondition" required>
+                        <option value="New with tag">Mới nguyên tem mác</option>
+                        <option value="Like new">Như mới (99%)</option>
+                        <option value="Good">Tốt (Đã sử dụng ít)</option>
+                        <option value="Fair">Trung bình</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Giá (VNĐ) *</label>
+                    <input type="number" id="pPrice" placeholder="Ví dụ: 500000" required>
+                    <small style="color: #666; display: block; margin-top: 4px; font-size: 11px;">
+                        * Bạn sẽ thực nhận <b>80%</b> giá trị này sau khi shop bán thành công sản phẩm.
+                    </small>
+                </div>
+            </div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>Kích cỡ (Size) *</label>
+                    <input type="text" id="pSize" placeholder="VD: S, M, L hoặc 32, 34..." required>
+                </div>
+                <div class="form-group">
+                    <label>Số lượng *</label>
+                    <input type="number" id="pQty" value="1" min="1" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Mô tả chi tiết</label>
+                <textarea id="pDesc" rows="4" placeholder="Mô tả về chất liệu, size, lý do bán..."></textarea>
+            </div>
+
+            <div class="form-section-title">Hình ảnh & Video thực tế</div>
+            <div class="media-uploader" onclick="document.getElementById('fileInput').click()">
+                <ion-icon name="cloud-upload-outline" style="font-size: 40px;"></ion-icon>
+                <p>Click để tải lên (Tối đa 5 file ảnh/video)</p>
+                <input type="file" id="fileInput" hidden multiple accept="image/*,video/*">
+            </div>
+            <div id="previewGrid" class="preview-container"></div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">Gửi yêu cầu ngay</button>
+            <div id="success-msg">Yêu cầu đã được gửi, shop sẽ liên hệ trong 24h.</div>
+        </form>
+    </div>
+
+    <!-- User Requests Display -->
+    <div class="user-requests-container container" id="userRequestsSection" style="display: none; margin-top: 40px;">
+        <h3 class="user-requests-title">
+            <ion-icon name="list-outline"></ion-icon> Sản phẩm bạn đã ký gửi
+        </h3>
+        
+        <!-- Wallet Card -->
+        <div class="balance-card">
+            <div>
+                <div class="balance-label">Số dư có thể rút</div>
+                <div class="balance-amount" id="userBalance">0đ</div>
+            </div>
+            <button class="btn-withdraw" onclick="handleWithdraw()">
+                <ion-icon name="cash-outline"></ion-icon> Rút tiền
+            </button>
+        </div>
+
+        <div id="userRequestsList"></div>
+    </div>
+
+    <script>
+        // --- CẤU HÌNH CLOUDINARY ---
+        const CLOUD_NAME = "YOUR_CLOUD_NAME"; // Thay bằng Cloud name của bạn
+        const UPLOAD_PRESET = "YOUR_UPLOAD_PRESET"; // Thay bằng tên Unsigned Preset bạn vừa tạo
+
+        let uploadedFiles = [];
+
+        /**
+         * Tự động tải danh sách sản phẩm đã mua từ lịch sử đơn hàng
+         */
+        document.addEventListener('DOMContentLoaded', async () => {
+            renderUserRequests(); // Hiển thị danh sách ngay khi tải trang
+            const userEmail = localStorage.getItem('email');
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const pNameInput = document.getElementById('pName');
+            const purchasedProductsList = document.getElementById('purchasedProductsList');
+
+            // Lấy danh sách tên sản phẩm duy nhất mà người dùng này đã mua
+            const purchasedProducts = new Set();
+            orders.forEach(order => {
+                if (!userEmail || (order.khachHang && order.khachHang.email === userEmail) || (order.customerInfo && order.customerInfo.email === userEmail)) {
+                    const items = order.items || order.sanPham || [];
+                    items.forEach(item => {
+                        const name = item.name || item.ten;
+                        if (name) purchasedProducts.add(name);
+                    });
+                }
+            });
+
+            purchasedProducts.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                purchasedProductsList.appendChild(option);
+            });
+
+            // Tự động điền thương hiệu khi nhập/chọn sản phẩm (nếu khớp với database shop)
+            const pBrandInput = document.getElementById('pBrand');
+            pNameInput.addEventListener('input', async (e) => {
+                const selectedName = e.target.value;
+                if (!selectedName || selectedName.length < 3) return;
+
+                try {
+                    const res = await fetch('json/products.json');
+                    const products = await res.json();
+                    const productMatch = products.find(p => p.name.toLowerCase() === selectedName.toLowerCase());
+                    if (productMatch && productMatch.brand) {
+                        pBrandInput.value = productMatch.brand;
+                    }
+                } catch (err) { console.error("Không thể lấy dữ liệu thương hiệu"); }
+            });
+        });
+
+        document.getElementById('fileInput').addEventListener('change', function (e) {
+            const files = Array.from(e.target.files);
+            if (uploadedFiles.length + files.length > 5) {
+                alert("Bạn chỉ được gửi tối đa 5 file.");
+                return;
+            }
+
+            for (let file of files) {
+                // Lưu File object và tạo URL tạm thời để xem trước (không tốn dung lượng lưu trữ)
+                uploadedFiles.push({
+                    file: file,
+                    type: file.type,
+                    preview: URL.createObjectURL(file)
+                });
+            }
+            renderPreviews();
+        });
+
+        // Hàm nén và chuyển đổi file sang Base64 (Dùng làm fallback nếu không có Cloudinary)
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (e) => {
+                    if (file.type.startsWith('video')) {
+                        resolve(e.target.result); // Video không nén bằng canvas được
+                        return;
+                    }
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width, height = img.height;
+                        const MAX = 800; // Giới hạn kích thước để không làm nặng LocalStorage
+                        if (width > height && width > MAX) { height *= MAX / width; width = MAX; }
+                        else if (height > MAX) { width *= MAX / height; height = MAX; }
+                        canvas.width = width; canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.6)); // Nén chất lượng 60%
+                    };
+                };
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Hàm xử lý upload lên Cloudinary
+        async function uploadToCloudinary(file) {
+            if (CLOUD_NAME === "YOUR_CLOUD_NAME" || UPLOAD_PRESET === "YOUR_UPLOAD_PRESET") {
+                return null; // Trả về null nếu chưa cấu hình
+            }
+            try {
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("upload_preset", UPLOAD_PRESET);
+
+                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`, {
+                    method: "POST",
+                    body: formData
+                });
+                if (!response.ok) return null;
+                const data = await response.json();
+                return data.secure_url;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function renderPreviews() {
+            const grid = document.getElementById('previewGrid');
+            grid.innerHTML = uploadedFiles.map((f, index) => `
+                <div class="preview-item">
+                    ${f.type.startsWith('video') ? `<video src="${f.preview}"></video>` : `<img src="${f.preview}">`}
+                    <ion-icon name="close-circle" class="remove-btn" onclick="removeFile(${index})"></ion-icon>
+                </div>
+            `).join('');
+        }
+
+        window.removeFile = (index) => {
+            URL.revokeObjectURL(uploadedFiles[index].preview); // Giải phóng bộ nhớ preview
+            uploadedFiles.splice(index, 1);
+            renderPreviews();
+        };
+
+        document.getElementById('resellForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            const originalBtnText = submitBtn.innerText;
+            submitBtn.innerText = "Đang xử lý...";
+            submitBtn.disabled = true;
+
+            try {
+                const mediaData = [];
+                for (let item of uploadedFiles) {
+                    // Thử upload lên Cloudinary trước
+                    let url = await uploadToCloudinary(item.file);
+                    
+                    // Nếu thất bại hoặc chưa cấu hình, dùng Base64 nén
+                    if (!url) {
+                        url = await fileToBase64(item.file);
+                    }
+                    
+                    mediaData.push({ type: item.type, data: url });
+                }
+
+                const request = {
+                    id: Date.now(),
+                    customerName: document.getElementById('cName').value,
+                    customerEmail: localStorage.getItem('email') || "Khách vãng lai",
+                    customerPhone: document.getElementById('cPhone').value,
+                    productName: document.getElementById('pName').value,
+                    brand: document.getElementById('pBrand').value,
+                    condition: document.getElementById('pCondition').value,
+                    size: document.getElementById('pSize').value,
+                    quantity: parseInt(document.getElementById('pQty').value) || 1,
+                    price: parseInt(document.getElementById('pPrice').value),
+                    description: document.getElementById('pDesc').value,
+                    media: mediaData,
+                    status: "Pending",
+                    date: new Date().toLocaleString('vi-VN')
+                };
+
+                // Lưu vào "Database" LocalStorage
+                const allRequests = JSON.parse(localStorage.getItem('resell_requests')) || [];
+                allRequests.push(request);
+                localStorage.setItem('resell_requests', JSON.stringify(allRequests));
+
+                document.getElementById('resellForm').reset();
+                uploadedFiles.forEach(f => URL.revokeObjectURL(f.preview));
+                uploadedFiles = [];
+                document.getElementById('previewGrid').innerHTML = '';
+                document.getElementById('success-msg').style.display = 'block';
+                
+                renderUserRequests(); // Cập nhật lại danh sách sau khi gửi thành công
+
+                // Cuộn lên thông báo thành công
+                document.getElementById('success-msg').scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                console.error("Lỗi:", error);
+                alert("Đã có lỗi xảy ra. Vui lòng thử lại.");
+            } finally {
+                submitBtn.innerText = originalBtnText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        function renderUserRequests() {
+            const userEmail = localStorage.getItem('email');
+            if (!userEmail) return;
+
+            const allRequests = JSON.parse(localStorage.getItem('resell_requests')) || [];
+            const allOrders = JSON.parse(localStorage.getItem('orders')) || [];
+            const userRequests = allRequests.filter(r => r.customerEmail === userEmail).reverse();
+
+            const section = document.getElementById('userRequestsSection');
+            const list = document.getElementById('userRequestsList');
+            const balanceEl = document.getElementById('userBalance');
+
+            let totalBalance = 0;
+
+            if (userRequests.length > 0) {
+                section.style.display = 'block';
+                list.innerHTML = userRequests.map(r => {
+                    const lnId = 'LN' + r.id;
+                    const isDelivered = allOrders.some(o => {
+                        const isSuccess = o.shippingLocation === 'Giao hàng thành công';
+                        if (!isSuccess) return false;
+
+                        return (o.items || o.sanPham || []).some(item => {
+                            if (String(item.id || '') === lnId) return true;
+                            if (!item.id && (item.name || item.ten) === r.productName) {
+                                try {
+                                    const orderDate = new Date(o.ngayDat || o.date);
+                                    const [time, date] = r.date.split(' ');
+                                    const [h, m, sec] = time.split(':');
+                                    const [d, mo, y] = date.split('/');
+                                    const requestDate = new Date(y, mo - 1, d, h, m, sec);
+                                    return orderDate >= requestDate;
+                                } catch(e) { return true; }
+                            }
+                            return false;
+                        });
+                    });
+
+                    let statusText = r.status === 'Pending' ? 'Đang chờ duyệt' : (r.status === 'Approved' ? 'Đang bán' : 'Từ chối');
+                    let statusClass = r.status;
+                    
+                    if (r.status === 'Approved' && isDelivered) {
+                        if (r.isPaid) {
+                            statusText = 'Đã thanh toán';
+                            statusClass = 'paid';
+                        } else {
+                            statusText = 'Nhận tiền';
+                            statusClass = 'received';
+                            // Cộng vào số dư nếu trạng thái là Nhận tiền và chưa thanh toán
+                            totalBalance += (r.price * 0.8);
+                        }
+                    }
+
+                    return `
+                    <div class="request-card">
+                        <div class="request-img">
+                            ${r.media && r.media.length > 0 
+                                ? (r.media[0].type.startsWith('video') 
+                                    ? `<video src="${r.media[0].data}"></video>` 
+                                    : `<img src="${r.media[0].data}">`)
+                                : '<div style="display:flex; align-items:center; justify-content:center; height:100%; color:#ccc;"><ion-icon name="image-outline" style="font-size:30px;"></ion-icon></div>'
+                            }
+                        </div>
+                        <div class="request-info">
+                            <h4>${r.productName}</h4>
+                            <p>Thương hiệu: ${r.brand} | Size: ${r.size} | SL: <strong>${r.quantity || 1}</strong></p>
+                            <div style="margin-bottom: 5px;">
+                                <p style="margin:0;">Giá bán: <strong style="color:#333;">${r.price.toLocaleString()}đ</strong></p>
+                                <p style="margin:0; font-size: 13px; color: #27ae60;">Thực nhận (80%): <strong>${(r.price * 0.8).toLocaleString()}đ</strong></p>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <small style="color:#999;">Ngày gửi: ${r.date}</small>
+                                <span class="status-badge status-${statusClass.toLowerCase()}">${statusText}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;}).join('');
+
+                // Cập nhật hiển thị số dư
+                balanceEl.innerText = totalBalance.toLocaleString() + 'đ';
+            } else {
+                section.style.display = 'none';
+            }
+        }
+        function handleWithdraw() {
+            const balanceStr = document.getElementById('userBalance').innerText;
+            const balance = parseInt(balanceStr.replace(/[^0-9]/g, ''));
+            
+            if (balance <= 0) {
+                alert("Số dư của bạn hiện đang là 0đ. Bạn cần chờ sản phẩm được bán và giao thành công để rút tiền.");
+                return;
+            }
+
+            const method = prompt(`Bạn đang có ${balance.toLocaleString()}đ có thể rút.\nVui lòng nhập STK + Tên Ngân hàng để nhận tiền:`);
+            if (method) {
+                // Thực hiện trừ tiền và đổi trạng thái
+                const userEmail = localStorage.getItem('email');
+                const allRequests = JSON.parse(localStorage.getItem('resell_requests')) || [];
+                const allOrders = JSON.parse(localStorage.getItem('orders')) || [];
+
+                const updatedRequests = allRequests.map(r => {
+                    if (r.customerEmail === userEmail && r.status === 'Approved' && !r.isPaid) {
+                        // Kiểm tra xem món này đã được giao thành công chưa để đánh dấu đã thanh toán
+                        const lnId = 'LN' + r.id;
+                        const isDelivered = allOrders.some(o => 
+                            o.shippingLocation === 'Giao hàng thành công' && 
+                            (o.items || o.sanPham || []).some(item => String(item.id || '') === lnId)
+                        );
+                        
+                        if (isDelivered) {
+                            return { ...r, isPaid: true };
+                        }
+                    }
+                    return r;
+                });
+
+                localStorage.setItem('resell_requests', JSON.stringify(updatedRequests));
+                
+                alert("Yêu cầu rút tiền của bạn đã được gửi đi. Shop sẽ xử lý và chuyển tiền cho bạn trong vòng 24h làm việc.");
+                
+                // Load lại danh sách để cập nhật số dư về 0 và đổi nhãn "Đã thanh toán"
+                renderUserRequests();
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt hàng thành công - TA FashionStyle</title>
+    <link rel="icon" href="images/logowhite.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="Style/checkout.css">
+    <style>
+        body {
+            background: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+
+        .success-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* CSS Checkmark Animation */
+        .checkmark-wrapper {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 2;
+            stroke: #097a6e;
+            stroke-miterlimit: 10;
+            box-shadow: inset 0px 0px 0px #097a6e;
+            animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+        }
+
+        .checkmark__circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            stroke: #097a6e;
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+
+        .checkmark__check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+
+        @keyframes stroke {
+            100% { stroke-dashoffset: 0; }
+        }
+        @keyframes scale {
+            0%, 100% { transform: none; }
+            50% { transform: scale3d(1.1, 1.1, 1); }
+        }
+        @keyframes fill {
+            100% { box-shadow: inset 0px 0px 0px 40px #fff; }
+        }
+
+        .btn-home {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: 600;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        .btn-home:hover {
+            background: #000;
+            transform: translateY(-2px);
+        }
+
+        /* Native Confetti */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #f00;
+            z-index: 5;
+            top: -10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="success-container">
+        <div class="checkmark-wrapper">
+            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+            </svg>
+        </div>
+
+        <h2 style="color: #097a6e; margin-top: 10px;">Đặt hàng thành công!</h2>
+        <p>Cảm ơn bạn đã tin tưởng TA FashionStyle.</p>
+
+        <div style="margin-top: 40px;">
+            <button class="btn-home" onclick="location.href='index.html'">Quay lại Trang Chủ</button>
+        </div>
+    </div>
+
+    <script>
+        // Native Confetti Logic (No CDN required)
+        function createConfetti() {
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
+            
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.classList.add('confetti');
+                    
+                    const size = Math.random() * 10 + 5 + 'px';
+                    confetti.style.width = size;
+                    confetti.style.height = size;
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.borderRadius = '50%';
+                    confetti.style.opacity = Math.random();
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+                    document.body.appendChild(confetti);
+
+                    const animation = confetti.animate([
+                        { transform: `translate3d(0, 0, 0) rotate(0deg)`, opacity: 1 },
+                        { transform: `translate3d(${(Math.random() - 0.5) * 200}px, 100vh, 0) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                    ], {
+                        duration: Math.random() * 3000 + 2000,
+                        easing: 'cubic-bezier(0, .9, .57, 1)',
+                        fill: 'forwards'
+                    });
+
+                    animation.onfinish = () => confetti.remove();
+                }, i * 20);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Trigger confetti immediately
+            createConfetti();
+            
+            // Repeat once for effect
+            setTimeout(createConfetti, 1000);
+        });
+    </script>
+</body>
+
+</html>

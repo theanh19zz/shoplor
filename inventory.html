@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Kho Hàng - TA FashionStyle</title>
+    <link rel="icon" href="images/logowhite.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="Style/main.css">
+    <link rel="stylesheet" href="Style/inventory.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+</head>
+
+<body>
+    <div class="inventory-container">
+        <header class="inventory-header">
+            <h1><ion-icon name="cube-outline"></ion-icon> Quản Lý Kho Hàng</h1>
+            <div class="actions">
+                <input type="text" id="inventorySearch" placeholder="Tìm tên sản phẩm...">
+                <a href="index.html" class="btn-back">Quay lại Trang Chủ</a>
+            </div>
+        </header>
+
+        <div class="inventory-table-wrapper">
+            <table id="inventoryTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Hình ảnh</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Danh mục</th>
+                        <th>Tồn kho hiện tại</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryList">
+                    <!-- Dữ liệu sẽ đổ vào đây bằng JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="JavaScript/inventory.js"></script>
+</body>
+
+</html>

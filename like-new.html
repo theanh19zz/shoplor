@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Like-New Store | TA FashionStyle</title>
+    <link rel="stylesheet" href="Style/main.css">
+    <link rel="stylesheet" href="Style/products.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <style>
+        .likenew-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            padding: 40px 8%;
+        }
+
+        .badge-secondhand {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #000;
+            color: #fff;
+            padding: 5px 12px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 2;
+        }
+
+        .price-resale {
+            color: #d63031;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .price-original {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 13px;
+            margin-left: 10px;
+            font-weight: 400;
+        }
+
+        .authenticated-tag {
+            font-size: 11px;
+            color: #27ae60;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 5px;
+        }
+
+        /* Dual Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 10px 5px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: none;
+        }
+
+        .btn-add-cart-outline {
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-add-cart-outline:hover {
+            background: #e9ecef;
+            border-color: #ccc;
+        }
+
+        .btn-buy-now-solid {
+            background: #d63031;
+            color: #fff;
+        }
+
+        .btn-buy-now-solid:hover {
+            background: #b32d2d;
+            box-shadow: 0 4px 8px rgba(214, 48, 49, 0.3);
+        }
+
+        .sold-out-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 3;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="container" id="header">
+        <div class="header_top">
+            <div class="header_social">
+                <ion-icon name="logo-instagram"></ion-icon>
+                <ion-icon name="logo-facebook"></ion-icon>
+            </div>
+            <img src="images/logo_block.jpg" alt="logo" id="logo" onclick="window.location.href='index.html'"
+                style="cursor:pointer; width: 100px;">
+            <div class="header_actions">
+                <a href="#" class="icon-cart">
+                    <ion-icon name="cart-outline"></ion-icon>
+                    <span id="cart-counter">0</span>
+                </a>
+            </div>
+        </div>
+        <nav id="navbar">
+            <ul>
+                <li><a href="index.html">Trang Chủ</a></li>
+                <li><a href="products.html">Cửa Hàng</a></li>
+                <li><a href="like-new.html">Đồ Like-New</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container" style="text-align: center; margin-top: 40px;">
+        <h2 style="text-transform: uppercase; letter-spacing: 4px; font-weight: 400;">The Like-New Edit</h2>
+        <p style="color: #888; font-weight: 300; margin-top: 10px;">Sản phẩm chất lượng, giá trị bền vững.</p>
+    </div>
+
+    <div class="likenew-grid" id="likenewProducts">
+        <!-- Render by JS -->
+    </div>
+
+    <!-- redesigned sidebar cart -->
+    <div class="cart-section" id="cartSidebar">
+        <div class="cart-header">
+            <h2>GIỎ HÀNG</h2>
+            <div class="closeCart" id="closeCartBtn">
+                <ion-icon name="close-outline"></ion-icon>
+            </div>
+        </div>
+        <div class="cart_products_sidebar">
+            <!-- Items added by JS -->
+        </div>
+        <div class="cart_footer">
+            <div class="total_info">
+                <p>Tổng tiền thanh toán:</p>
+                <h3 id="sidebar_total_price">0đ</h3>
+            </div>
+            <div class="sidebar_btns">
+                <button class="btn_view_cart" onclick="location.href='cartPage.html'">XEM GIỎ HÀNG</button>
+                <button class="btn_checkout" onclick="checkOut()">THANH TOÁN</button>
+            </div>
+        </div>
+    </div>
+
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>© 2026 Thế Anh Shop. Authentic Like-New Collection.</p>
+        </div>
+    </footer>
+
+    <script src="JavaScript/main.js"></script>
+    <script src="JavaScript/cart.js"></script>
+    <script>
+        function renderLikeNew() {
+            const products = JSON.parse(localStorage.getItem('likenew_products')) || [];
+            const grid = document.getElementById('likenewProducts');
+
+            if (products.length === 0) {
+                grid.innerHTML = "<p style='grid-column: 1/-1; text-align:center;'>Hiện chưa có sản phẩm nào.</p>";
+                return;
+            }
+
+            grid.innerHTML = products.map(p => {
+                const totalQty = Number(p.quantity || 1);
+                const soldQty = Number(p.soldCount || 0);
+                const remainingQty = totalQty - soldQty;
+                const isSoldOut = remainingQty <= 0;
+
+                const cardClick = isSoldOut ? '' : `onclick="location.href='like-new-detail.html?id=${p.id}'"`;
+                const cursorStyle = isSoldOut ? 'cursor:default;' : 'cursor:pointer;';
+                const buyButton = isSoldOut ?
+                    `<button class="shop-btn" style="width: 100%; margin-top: 15px; font-size: 12px; background:#999; cursor:default;" disabled>HẾT HÀNG</button>` :
+                    `<div class="action-buttons">
+                        <button onclick="event.stopPropagation(); window.addToCartLN('${p.id}', false)" class="btn-action btn-add-cart-outline">Thêm vào giỏ</button>
+                        <button onclick="event.stopPropagation(); window.addToCartLN('${p.id}', true)" class="btn-action btn-buy-now-solid">Mua ngay</button>
+                    </div>`;
+
+                return `
+                    <div class="product-card" ${cardClick} style="${cursorStyle} position:relative;">
+                        ${isSoldOut ? '<div class="sold-out-overlay">HẾT HÀNG</div>' : ''}
+                        <div class="badge-secondhand">${p.tag}</div>
+                        <div class="card-img">
+                            <img src="${p.image}" style="width: 100%; height: 350px; object-fit: cover;">
+                        </div>
+                        <div class="card-info" style="padding: 15px;">
+                            <span style="font-size: 11px; color: #888; text-transform: uppercase;">${p.brand}</span>
+                            <h4 style="margin: 5px 0; font-weight: 500; font-size: 15px;">${p.name}</h4>
+                            <div class="condition-label" style="font-size: 12px; color: #777;">
+                                Tình trạng: <strong>${p.condition}</strong> | Size: ${p.size}
+                                ${remainingQty > 0 ? ` | Còn lại: <strong style="color:var(--accent-color);">${remainingQty}</strong>` : ''}
+                            </div>
+                                <span class="price-resale">${p.resalePrice.toLocaleString()}đ</span>
+                            </div>
+                            <div class="authenticated-tag">
+                                <ion-icon name="checkmark-circle"></ion-icon> Authenticated by Shop
+                            </div>
+                            ${buyButton}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Thêm hàm bổ trợ để nút Mua Ngay hoạt động
+        window.addToCartLN = (id, buyNow = false) => {
+            const likeNewProducts = JSON.parse(localStorage.getItem('likenew_products')) || [];
+            const product = likeNewProducts.find(item => String(item.id) === String(id));
+            if (product) {
+                // Gọi hàm addToCart từ cart.js để lưu vào giỏ hàng chung
+                window.addToCart(product.id, 1, product.size, null, product.image);
+                
+                if (buyNow) {
+                    // Tạo danh sách checkout tạm thời để trang thanh-toan.html nhận diện ngay
+                    const checkoutItem = {
+                        id: product.id,
+                        name: product.name,
+                        price: product.resalePrice,
+                        image: product.image,
+                        size: product.size,
+                        quantity: 1,
+                        selected: true
+                    };
+                    localStorage.setItem('checkout_items', JSON.stringify([checkoutItem]));
+                    window.location.href = 'thanh-toan.html';
+                } else {
+                    alert("Đã thêm sản phẩm Like-New vào giỏ hàng!");
+                }
+            }
+        };
+
+        renderLikeNew();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tin Tức & Xu Hướng Thời Trang - Thế Anh Shop</title>
+    <link rel="stylesheet" href="Style/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        .news-container {
+            padding: 60px 8%;
+        }
+
+        .news-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .news-header h1 {
+            font-size: 36px;
+            color: var(--text-main);
+        }
+
+        .news-grid {
+            display: block;
+            /* Hủy Grid để dùng Columns */
+            column-count: 3;
+            column-gap: 30px;
+        }
+
+        @media (max-width: 1100px) {
+            .news-grid {
+                column-count: 2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .news-grid {
+                column-count: 1;
+            }
+        }
+
+        .news-filter {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 25px;
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+
+        .blog-card {
+            display: inline-block;
+            /* Quan trọng cho Masonry */
+            width: 100%;
+            margin-bottom: 30px;
+            /* Tạo khoảng cách dọc giữa các bài */
+            break-inside: avoid;
+            /* Ngăn bài viết bị cắt đôi giữa 2 cột */
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: opacity 0.4s ease, transform 0.4s ease, box-shadow 0.3s ease;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .blog-card.filtering {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        .blog-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background-color: #f0f0f0;
+            /* Màu nền chờ trong khi tải ảnh */
+        }
+
+        .blog-info {
+            padding: 20px;
+        }
+
+        .blog-date {
+            font-size: 12px;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .blog-title {
+            font-size: 18px;
+            margin: 10px 0;
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+
+        .blog-excerpt {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .read-more {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="container" id="header">
+        <div class="header_top">
+            <img src="images/logo_block.jpg" alt="logo" id="logo" style="width: 100px; cursor: pointer;" onclick="window.location.href='index.html'">
+            <div class="header_actions">
+                <a href="cartPage.html" class="icon-cart">
+                    <ion-icon name="cart-outline"></ion-icon>
+                    <span id="cart-counter">0</span>
+                </a>
+            </div>
+        </div>
+        <nav>
+            <menu>
+                <ul>
+                    <li><a href="index.html">Trang Chủ</a></li>
+                    <li><a href="products.html">Cửa Hàng</a></li>
+                    <li><a href="pre_loved.html">Ký Gửi</a></li>
+                    <li><a href="news.html" style="color: var(--primary-color); font-weight: bold;">Tin Tức</a></li>
+                    <li><a href="#">Liên Hệ</a></li>
+                </ul>
+            </menu>
+        </nav>
+    </header>
+
+    <div class="news-container">
+        <div class="news-header reveal fade-up">
+            <h1>Xu Hướng & Phong Cách</h1>
+            <p>Cập nhật những thông tin mới nhất từ làng mốt thế giới</p>
+        </div>
+
+        <div class="news-filter reveal fade-up">
+            <button class="filter-btn active" data-filter="all">Tất cả</button>
+            <button class="filter-btn" data-filter="xu-huong">Xu hướng</button>
+            <button class="filter-btn" data-filter="phoi-do">Phối đồ</button>
+            <button class="filter-btn" data-filter="tips">Tips bảo quản</button>
+        </div>
+
+        <div class="news-grid">
+            <!-- Blog Post 1 -->
+            <div class="blog-card reveal fade-up" data-category="xu-huong">
+                <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500" class="blog-img"
+                    loading="lazy" alt="Màu sắc mùa hè 2026">
+                <div class="blog-info">
+                    <span class="blog-date">05 THÁNG 4, 2026</span>
+                    <h3 class="blog-title">Màu Sắc Lên Ngôi Trong Mùa Hè 2026</h3>
+                    <p class="blog-excerpt">Khám phá bảng màu rực rỡ từ xanh lục bảo đến hồng cam sẽ thống trị tủ đồ của
+                        bạn...</p>
+                    <a href="#" class="read-more">Xem thêm <ion-icon name="arrow-forward-outline"></ion-icon></a>
+                </div>
+            </div>
+
+            <!-- Blog Post 2 -->
+            <div class="blog-card reveal fade-up" data-delay="200" data-category="phoi-do">
+                <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=500" class="blog-img"
+                    loading="lazy" alt="Phong cách tối giản Minimalism">
+                <div class="blog-info">
+                    <span class="blog-date">02 THÁNG 4, 2026</span>
+                    <h3 class="blog-title">Phong Cách Minimalism: Càng Giản Đơn Càng Sang Trọng</h3>
+                    <p class="blog-excerpt">Làm thế nào để phối đồ tối giản mà vẫn giữ được sự tinh tế và đẳng cấp riêng
+                        biệt...</p>
+                    <a href="#" class="read-more">Xem thêm <ion-icon name="arrow-forward-outline"></ion-icon></a>
+                </div>
+            </div>
+
+            <!-- Blog Post 3 -->
+            <div class="blog-card reveal fade-up" data-delay="400" data-category="xu-huong">
+                <img src="https://images.unsplash.com/photo-1539109132314-34a7735ee29c?w=500" class="blog-img"
+                    loading="lazy" alt="Thời trang thập niên 90">
+                <div class="blog-info">
+                    <span class="blog-date">30 THÁNG 3, 2026</span>
+                    <h3 class="blog-title">Sự Quay Trở Lại Của Thập Niên 90</h3>
+                    <p class="blog-excerpt">Quần jean ống rộng và áo crop-top đang làm mưa làm gió trên khắp các sàn
+                        diễn thời trang...</p>
+                    <a href="#" class="read-more">Xem thêm <ion-icon name="arrow-forward-outline"></ion-icon></a>
+                </div>
+            </div>
+
+            <!-- Blog Post 4 -->
+            <div class="blog-card reveal fade-up" data-delay="600" data-category="tips">
+                <img src="https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=500" class="blog-img"
+                    loading="lazy" alt="Mẹo giặt đồ Linen">
+                <div class="blog-info">
+                    <span class="blog-date">28 THÁNG 3, 2026</span>
+                    <h3 class="blog-title">Mẹo Giặt Ủi Đồ Linen Cực Chuẩn</h3>
+                    <p class="blog-excerpt">Làm thế nào để giữ cho sợi vải linen luôn mềm mại và không bị co rút sau khi
+                        giặt...</p>
+                    <a href="#" class="read-more">Xem thêm <ion-icon name="arrow-forward-outline"></ion-icon></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Articles Section -->
+        <div class="related-news-section reveal fade-up">
+            <h2 class="related-news-title">
+                <ion-icon name="bookmark-outline"></ion-icon> Bài viết liên quan
+            </h2>
+            <div class="related-grid">
+                <div class="blog-card related-card">
+                    <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400" class="blog-img"
+                        loading="lazy" alt="Bảo quản đồ da">
+                    <div class="blog-info">
+                        <span class="blog-date">25 THÁNG 3, 2026</span>
+                        <h4 class="blog-title" style="font-size: 15px;">Cách Bảo Quản Đồ Da Luôn Như Mới</h4>
+                        <a href="#" class="read-more" style="font-size: 13px;">Chi tiết</a>
+                    </div>
+                </div>
+                <div class="blog-card related-card">
+                    <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=400" class="blog-img"
+                        loading="lazy" alt="Phụ Kiện đi biển">
+                    <div class="blog-info">
+                        <span class="blog-date">20 THÁNG 3, 2026</span>
+                        <h4 class="blog-title" style="font-size: 15px;">5 Phụ Kiện Không Thể Thiếu Khi Đi Biển</h4>
+                        <a href="#" class="read-more" style="font-size: 13px;">Chi tiết</a>
+                    </div>
+                </div>
+                <div class="blog-card related-card">
+                    <img src="https://images.unsplash.com/photo-1479064566235-aa27457a4036?w=400" class="blog-img"
+                        loading="lazy" alt="Street style năng động">
+                    <div class="blog-info">
+                        <span class="blog-date">15 THÁNG 3, 2026</span>
+                        <h4 class="blog-title" style="font-size: 15px;">Mix & Match: Street Style Năng Động</h4>
+                        <a href="#" class="read-more" style="font-size: 13px;">Chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="footer-logo">
+                <img src="images/logo_block.jpg" alt="logo" width="140" style="border-radius: 8px;">
+                <p>Nơi phong cách hội ngộ cùng đẳng cấp.</p>
+            </div>
+            <div class="footer-list">
+                <div class="list">
+                    <h4>MUA SẮM</h4>
+                    <ul>
+                        <li><a href="products.html">Quần Áo</a></li>
+                        <li><a href="products.html?category=Accessories">Phụ Kiện</a></li>
+                        <li><a href="pre_loved.html">Ký Gửi</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 Thế Anh Shop. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="JavaScript/main.js"></script>
+    <script src="JavaScript/cart.js"></script>
+    <script>
+        function initFilter() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const blogCards = document.querySelectorAll('.news-grid .blog-card');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (btn.classList.contains('active')) return;
+
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const filterValue = btn.getAttribute('data-filter');
+
+                    blogCards.forEach(card => {
+                        const isMatch = filterValue === 'all' || card.getAttribute('data-category') === filterValue;
+
+                        if (isMatch) {
+                            // Hiển thị lại bài viết
+                            card.style.display = 'inline-block';
+                            // Force reflow để trình duyệt nhận diện trạng thái display trước khi chạy transition
+                            void card.offsetWidth;
+                            card.classList.remove('filtering');
+                            // Đảm bảo reveal animation cũng được kích hoạt
+                            card.classList.add('active');
+                        } else {
+                            // Thêm class để chạy hiệu ứng biến mất
+                            card.classList.add('filtering');
+                            // Đợi hiệu ứng transition (0.4s) kết thúc rồi mới ẩn hoàn toàn khỏi layout
+                            setTimeout(() => {
+                                if (card.classList.contains('filtering')) {
+                                    card.style.display = 'none';
+                                }
+                            }, 400);
+                        }
+                    });
+                });
+            });
+        }
+
+        // Reveal Animation logic (tương đương index.js)
+        function initReveal() {
+            const reveals = document.querySelectorAll(".reveal");
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        if (entry.target.dataset.delay) {
+                            entry.target.style.transitionDelay = entry.target.dataset.delay + "ms";
+                        }
+                        entry.target.classList.add("active");
+                    }
+                });
+            }, { threshold: 0.1 });
+            reveals.forEach(r => observer.observe(r));
+        }
+        window.onload = () => {
+            initReveal();
+            initFilter();
+        };
+    </script>
+</body>
+
+</html>

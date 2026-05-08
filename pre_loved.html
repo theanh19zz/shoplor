@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ký Gửi & Pre-loved - Thế Anh Shop</title>
+    <link rel="stylesheet" href="Style/main.css">
+    <link rel="stylesheet" href="Style/products.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        .preloved-hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&q=80&w=1000');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            height: 450px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero-badge {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .preloved-hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+            color: #fff;
+        }
+
+        .sell-container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: -60px auto 40px;
+            z-index: 10;
+            position: relative;
+        }
+
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 40px 8%;
+            text-align: center;
+        }
+
+        .step-item {
+            padding: 20px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            transition: 0.3s;
+        }
+
+        .step-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .step-icon {
+            font-size: 40px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .step-item h4 {
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .step-item p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .btn-sell {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-sell:hover {
+            background: var(--primary-light);
+            box-shadow: 0 5px 15px rgba(14, 193, 174, 0.3);
+        }
+
+        .badge-preloved {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 2px 8px;
+            font-size: 11px;
+            border-radius: 0 0 12px 0;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        .preloved-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            padding: 20px 8%;
+            perspective: 1000px;
+        }
+
+        .product-card {
+            background: #fff;
+            border-radius: 12px;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            transform-style: preserve-3d;
+            border: 1px solid #eee;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px) rotateX(1deg) rotateY(-0.5deg);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+            z-index: 5;
+        }
+
+        /* Inner Zoom cho Pre-loved */
+        .product-card img {
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            display: block;
+        }
+
+        .product-card:hover img {
+            transform: scale(1.15);
+        }
+
+        /* Progress Bar Styles */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: transparent;
+            z-index: 10001;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #27ae60;
+            width: 0%;
+            transition: width 0.1s ease-out;
+        }
+
+        /* Image Preview Styles */
+        .image-preview-wrapper {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .preview-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .preview-item {
+            position: relative;
+            display: inline-block;
+        }
+
+        .remove-preview {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #d63031;
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: var(--shadow-sm);
+            z-index: 5;
+        }
+
+        .remove-preview ion-icon {
+            font-size: 16px;
+        }
+
+        /* Dual Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 10px 5px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: none;
+        }
+
+        .btn-add-cart-outline {
+            background: #f8f9fa;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-add-cart-outline:hover {
+            background: #e9ecef;
+            border-color: #ccc;
+        }
+
+        .btn-buy-now-solid {
+            background: #d63031;
+            color: #fff;
+        }
+
+        .btn-buy-now-solid:hover {
+            background: #b32d2d;
+            box-shadow: 0 4px 8px rgba(214, 48, 49, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="progress-container">
+        <div class="progress-bar" id="scrollBar"></div>
+    </div>
+    <header class="container" id="header">
+        <div class="header_top">
+            <img src="images/logo_block.jpg" alt="logo" id="logo" style="width: 100px;">
+            <div class="header_actions">
+                <a href="#" class="icon-cart">
+                    <ion-icon name="cart-outline"></ion-icon>
+                    <span id="cart-counter">0</span>
+                </a>
+            </div>
+        </div>
+        <nav>
+            <menu>
+                <ul>
+                    <li><a href="index.html">Trang Chủ</a></li>
+                    <li>
+                        <a href="products.html" class="nav-item-with-icon">
+                            Cửa Hàng <ion-icon name="chevron-down-outline" style="font-size: 12px;"></ion-icon>
+                        </a>
+                        <ul class="dropdown">
+                            <li><a href="products.html?category=Woman">Quần Áo Nữ</a></li>
+                            <li><a href="products.html?category=Man">Quần Áo Nam</a></li>
+                            <li><a href="products.html?category=Kids">Quần Áo Trẻ Em</a></li>
+                            <li><a href="products.html?category=Accessories">Phụ Kiện</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="pre_loved.html">Ký Gửi</a></li>
+                    <li><a href="#">Liên Hệ</a></li>
+                </ul>
+            </menu>
+        </nav>
+    </header>
+
+    <!-- redesigned sidebar cart -->
+    <div class="cart-section" id="cartSidebar">
+        <div class="cart-header">
+            <h2>GIỎ HÀNG</h2>
+            <div class="closeCart" id="closeCartBtn">
+                <ion-icon name="close-outline"></ion-icon>
+            </div>
+        </div>
+        <div class="cart_products_sidebar">
+            <!-- Items added by JS -->
+        </div>
+        <div class="cart_footer">
+            <div class="total_info">
+                <p>Tổng tiền thanh toán:</p>
+                <h3 id="sidebar_total_price">0đ</h3>
+            </div>
+            <div class="sidebar_btns">
+                <button class="btn_view_cart" onclick="location.href='cartPage.html'">XEM GIỎ HÀNG</button>
+                <button class="btn_checkout" onclick="checkOut()">THANH TOÁN</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="preloved-hero">
+        <div class="hero-badge reveal zoom-in">
+            <h1>Ký Gửi & Cũ Người Mới Ta</h1>
+            <p>Trao cơ hội - Tặng vòng đời mới cho những món đồ yêu quý của bạn.</p>
+        </div>
+    </div>
+
+    <div class="process-steps reveal fade-up">
+        <div class="step-item">
+            <div class="step-icon"><ion-icon name="cloud-upload-outline"></ion-icon></div>
+            <h4>1. Đăng ký</h4>
+            <p>Chọn sản phẩm đã mua và tải lên hình ảnh thực tế của món đồ.</p>
+        </div>
+        <div class="step-item">
+            <div class="step-icon"><ion-icon name="shield-check-outline"></ion-icon></div>
+            <h4>2. Kiểm duyệt</h4>
+            <p>Admin sẽ kiểm tra tình trạng sản phẩm trong vòng 24h làm việc.</p>
+        </div>
+        <div class="step-item">
+            <div class="step-icon"><ion-icon name="cash-outline"></ion-icon></div>
+            <h4>3. Nhận tiền</h4>
+            <p>Sau khi có người mua, bạn sẽ nhận được giá trị thanh toán nhanh chóng.</p>
+        </div>
+    </div>
+
+    <div class="sell-container reveal fade-up">
+        <h3><ion-icon name="add-circle-outline"></ion-icon> Đăng Ký Ký Gửi</h3>
+        <form id="sellForm">
+            <div class="form-group">
+                <label>Chọn sản phẩm bạn muốn bán lại</label>
+                <select id="itemSelect" required>
+                    <option value="">-- Chọn sản phẩm đã mua --</option>
+                </select>
+            </div>
+            <div class="form-group" style="display: flex; gap: 10px;">
+                <div style="flex: 1;">
+                    <label>Giá mong muốn (đ)</label>
+                    <input type="text" id="itemPrice" placeholder="500.000" required>
+                </div>
+                <div style="flex: 1;">
+                    <label>Độ mới (%)</label>
+                    <select id="itemCondition">
+                        <option value="99%">Mới 99% (Like New)</option>
+                        <option value="95%">Mới 95%</option>
+                        <option value="90%">Mới 90%</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Mô tả tình trạng</label>
+                <textarea id="itemDesc" rows="2" placeholder="Sản phẩm còn nguyên mác, mặc 1 lần..."></textarea>
+            </div>
+            <div class="form-group" style="display: flex; gap: 10px;">
+                <div style="flex: 1;">
+                    <label>Ảnh thực tế (Tối đa 5 ảnh)</label>
+                    <input type="file" id="userPhotos" accept="image/*" multiple>
+                    <div id="imagePreviewContainer" class="image-preview-wrapper"></div>
+                </div>
+                <div style="flex: 1;">
+                    <label>Video thực tế</label>
+                    <input type="file" id="userVideo" accept="video/*">
+                </div>
+            </div>
+            <button type="submit" class="btn-sell">Đăng Ký Bán Lại</button>
+        </form>
+    </div>
+
+    <div class="container reveal fade-up" id="myItemsContainer" style="display: none; margin-bottom: 40px;">
+        <h2 style="text-align: center; margin-bottom: 20px; color: var(--primary-color);">Tin Đăng Của Bạn</h2>
+        <div class="preloved-grid" id="myPrelovedGrid">
+            <!-- Tin đăng của người dùng sẽ hiện ở đây -->
+        </div>
+        <hr style="margin: 40px 0; border: 0; border-top: 1px solid #eee;">
+    </div>
+
+    <div class="container reveal fade-up">
+        <h2 style="text-align: center; margin-bottom: 30px;">Chợ Đồ Cũ (Pre-loved Marketplace)</h2>
+        <div class="preloved-grid" id="prelovedGrid">
+            <!-- Items will be loaded here -->
+        </div>
+    </div>
+
+
+    <script src="JavaScript/main.js"></script>
+    <script src="JavaScript/cart.js"></script>
+    <script>
+        // Dữ liệu mẫu cũ đã được xóa sạch để đồng bộ với sản phẩm thực tế của người dùng
+        const initialPreloved = [];
+
+        async function loadShopProducts() {
+            try {
+                const res = await fetch('json/products.json');
+                if (!res.ok) throw new Error('Failed to load products');
+                const shopProducts = await res.json();
+                window.products = shopProducts; // Đồng bộ dữ liệu sản phẩm cho giỏ hàng
+
+                const select = document.getElementById('itemSelect');
+                select.innerHTML = '<option value="">-- Chọn sản phẩm đã mua --</option>';
+
+                // Đồng bộ: Lấy danh sách sản phẩm khách đã mua từ lịch sử đơn hàng (dựa trên tên)
+                const orders = JSON.parse(localStorage.getItem('orders')) || [];
+                const purchasedNames = new Set();
+                orders.forEach(o => (o.items || o.sanPham || []).forEach(i => purchasedNames.add(i.name || i.ten)));
+
+                const myPurchased = shopProducts.filter(p => purchasedNames.has(p.name));
+                const listToShow = myPurchased.length > 0 ? myPurchased : shopProducts;
+
+                listToShow.forEach(p => {
+                    const option = document.createElement('option');
+                    option.value = p.id;
+                    option.textContent = p.name;
+                    select.appendChild(option);
+                });
+                return shopProducts;
+            } catch (error) {
+                console.error("Error loading products:", error);
+                return [];
+            }
+        }
+
+        function renderPreloved(shopProducts = []) {
+            const userItems = JSON.parse(localStorage.getItem('user_preloved')) || [];
+
+            // Tách riêng: Đồ của mình (đang chờ duyệt/đã duyệt) và Đồ của người khác đã được duyệt
+            const myItems = userItems.filter(item => item.seller.includes("Bạn")); // Hiện ở mục "Tin của bạn"
+
+            // CHỢ ĐỒ CŨ: Chỉ lấy sản phẩm KHÔNG còn "Chờ duyệt" VÀ KHÔNG bị "từ chối"
+            const approvedItems = userItems.filter(item => !item.seller.includes("Chờ duyệt") && !item.seller.includes("từ chối"));
+            const marketplaceItems = [...initialPreloved, ...approvedItems];
+
+            // 1. Hiển thị khu vực "Tin Đăng Của Bạn"
+            const myContainer = document.getElementById('myItemsContainer');
+            const myGrid = document.getElementById('myPrelovedGrid');
+
+            if (myItems.length > 0) {
+                myContainer.style.display = 'block';
+                myGrid.innerHTML = myItems.map(item => generateCard(item, true)).join('');
+            } else {
+                myContainer.style.display = 'none';
+            }
+
+            // 2. Hiển thị khu vực Chợ Đồ Cũ (Chỉ hiện đồ đã duyệt)
+            const grid = document.getElementById('prelovedGrid');
+            grid.innerHTML = marketplaceItems.length > 0
+                ? marketplaceItems.map(item => generateCard(item, false)).join('')
+                : '<div style="grid-column: 1/-1; text-align:center; padding: 50px; color: #999;"><h3>Chợ đồ cũ hiện đang trống</h3><p>Hãy trở thành người đầu tiên đăng ký ký gửi sản phẩm!</p></div>';
+
+            // Đồng bộ hóa danh sách sản phẩm Pre-loved vào hệ thống giỏ hàng
+            if (window.products && Array.isArray(window.products)) {
+                window.products.push(...marketplaceItems, ...myItems);
+            }
+        }
+
+        // Hàm tạo card sản phẩm dùng chung
+        function generateCard(item, isMine) {
+            let statusLabel = 'Sẵn sàng';
+            let badgeColor = 'var(--primary-color)';
+
+            if (item.seller.includes('Chờ')) { statusLabel = 'Đang chờ duyệt'; badgeColor = '#e67e22'; }
+            if (item.seller.includes('từ chối')) { statusLabel = 'Đã từ chối'; badgeColor = '#d63031'; }
+
+            const badge = isMine ?
+                `<span class="badge-preloved" style="background: ${badgeColor}">${statusLabel}</span>` :
+                `<span class="badge-preloved">Like new ${item.condition}</span>`;
+
+            return `
+                <div class="product-card">
+                    ${badge}
+                    <div class="card-img">
+                        <img src="${item.images[0]}" style="width: 100%; height: 280px; object-fit: cover;">
+                    </div>
+                    <div class="card-info" style="padding: 20px;">
+                        <h4 class="product-name">${item.name}</h4>
+                        <p class="product-price" style="color: #d63031; font-size: 1.1rem; margin-bottom: 5px;">${item.price}</p>
+                        ${item.sizes && item.sizes.length > 0 ? `<p style="font-size: 12px; color: var(--text-muted);">Size: ${item.sizes.join(', ')}</p>` : ''}
+                        ${item.colors && item.colors.length > 0 ? `<p style="font-size: 12px; color: var(--text-muted);">Màu: ${item.colors.join(', ')}</p>` : ''}
+                        <p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">Người bán: ${item.seller}</p>
+                        ${!isMine && !item.seller.includes('Chờ') && !item.seller.includes('từ chối') ?
+                    `<div class="action-buttons">
+                        <button onclick="addPrelovedToCart(${item.id}, false)" class="btn-action btn-add-cart-outline">Thêm vào giỏ</button>
+                        <button onclick="addPrelovedToCart(${item.id}, true)" class="btn-action btn-buy-now-solid">Mua ngay</button>
+                    </div>` : ''}
+                    </div>
+                </div>`;
+        }
+
+        // Hàm riêng để add vào giỏ (vì cấu trúc id khác một chút)
+        window.addPrelovedToCart = function(id, buyNow = false) {
+            const userItems = JSON.parse(localStorage.getItem('user_preloved')) || [];
+            const allPreloved = [...initialPreloved, ...userItems];
+            const item = allPreloved.find(p => p.id === id);
+
+            if (item) {
+                // Giả lập đưa vào mảng products của cart.js
+                if (window.products && Array.isArray(window.products)) {
+                    if (!window.products.find(p => String(p.id) === String(id))) window.products.push(item);
+                }
+                addToCart(id);
+                
+                if (buyNow) {
+                    window.location.href = 'thanh-toan.html';
+                } else {
+                    alert("Đã thêm món đồ Pre-loved vào giỏ hàng!");
+                }
+            }
+        }
+
+        // Hàm hỗ trợ chuyển File sang Base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                if (!file.type.startsWith('image/')) {
+                    // Nếu không phải ảnh (ví dụ video), trả về base64 gốc
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = error => reject(error);
+                    return;
+                }
+
+                // Xử lý nén cho ảnh để tối ưu dung lượng localStorage
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        const MAX_SIZE = 800; // Giới hạn kích thước tối đa 800px
+
+                        if (width > height && width > MAX_SIZE) {
+                            height *= MAX_SIZE / width;
+                            width = MAX_SIZE;
+                        } else if (height > MAX_SIZE) {
+                            width *= MAX_SIZE / height;
+                            height = MAX_SIZE;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        // Nén ảnh thành JPEG với chất lượng 0.7 (70%)
+                        resolve(canvas.toDataURL('image/jpeg', 0.7));
+                    };
+                };
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Hệ thống hiệu ứng cuộn trang (Reveal Animation)
+        function initReveal() {
+            const reveals = document.querySelectorAll(".reveal");
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        if (el.dataset.delay) {
+                            el.style.transitionDelay = el.dataset.delay + "ms";
+                        }
+                        el.classList.add("active");
+
+                        // Hiệu ứng cho các item con
+                        const items = el.querySelectorAll('.reveal-item');
+                        items.forEach((item, index) => {
+                            item.style.transitionDelay = `${(index + 1) * 150}ms`;
+                        });
+                        observer.unobserve(el);
+                    }
+                });
+            }, {
+                threshold: 0.15
+            });
+
+            reveals.forEach(reveal => revealObserver.observe(reveal));
+        }
+
+        // Hàm hỗ trợ tải dữ liệu xuống dưới dạng file JSON
+        function downloadBackup(data, fileName) {
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // Hệ thống quản lý và dọn dẹp bộ nhớ localStorage
+        function checkAndCleanStorage(incomingSize) {
+            let totalBytes = 0;
+            for (let key in localStorage) {
+                if (localStorage.hasOwnProperty(key)) {
+                    // Mỗi ký tự trong JS chiếm 2 bytes (UTF-16)
+                    totalBytes += (localStorage[key].length + key.length) * 2;
+                }
+            }
+
+            const STORAGE_LIMIT = 4.5 * 1024 * 1024; // Ngưỡng cảnh báo 4.5MB
+
+            if (totalBytes + incomingSize > STORAGE_LIMIT) {
+                console.warn("Dung lượng localStorage sắp đầy. Đang tiến hành dọn dẹp...");
+
+                // Lấy toàn bộ dữ liệu hiện có để sao lưu trước khi bị cắt tỉa
+                const fullOrders = JSON.parse(localStorage.getItem('admin_orders')) || [];
+                const fullPreloved = JSON.parse(localStorage.getItem('user_preloved')) || [];
+
+                if (fullOrders.length > 0 || fullPreloved.length > 0) {
+                    const backupData = {
+                        shopName: "THE ANH SHOP",
+                        backupDate: new Date().toLocaleString('vi-VN'),
+                        orders: fullOrders,
+                        prelovedItems: fullPreloved
+                    };
+                    downloadBackup(backupData, `TheAnhShop_AutoBackup_${Date.now()}.json`);
+                    alert("⚠️ Bộ nhớ trình duyệt sắp đầy! Hệ thống đã tự động sao lưu toàn bộ Đơn hàng và Tin ký gửi vào file JSON để bảo vệ dữ liệu của bạn.");
+                }
+
+                // 1. Xóa lịch sử chat (Dữ liệu ít quan trọng nhất)
+                localStorage.removeItem('shop_messages');
+
+                // 2. Cắt bớt danh sách đơn hàng Admin (Chỉ giữ lại 15 đơn mới nhất)
+                if (fullOrders.length > 15) {
+                    localStorage.setItem('admin_orders', JSON.stringify(fullOrders.slice(-15)));
+                }
+
+                // 3. Cắt bớt tin ký gửi cũ (Chỉ giữ lại 10 tin mới nhất để giải phóng Base64)
+                if (fullPreloved.length > 10) {
+                    localStorage.setItem('user_preloved', JSON.stringify(fullPreloved.slice(-10)));
+                }
+            }
+        }
+
+        let selectedFiles = []; // Mảng lưu trữ danh sách file đã chọn
+
+        // Xử lý xem trước ảnh khi chọn file
+        document.getElementById('userPhotos').addEventListener('change', function (e) {
+            const files = Array.from(e.target.files);
+
+            if (selectedFiles.length + files.length > 5) {
+                alert("Bạn chỉ có thể tải lên tối đa 5 ảnh thực tế cho mỗi sản phẩm.");
+                this.value = ""; // Reset input
+                return;
+            }
+
+            selectedFiles = [...selectedFiles, ...files];
+            renderPreviews();
+            this.value = ""; // Reset input để có thể chọn lại cùng một file nếu đã xóa
+        });
+
+        function renderPreviews() {
+            const container = document.getElementById('imagePreviewContainer');
+            container.innerHTML = '';
+
+            selectedFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const div = document.createElement('div');
+                    div.className = 'preview-item';
+                    div.innerHTML = `
+                        <img src="${event.target.result}" class="preview-img">
+                        <div class="remove-preview" onclick="removeFile(${index})">
+                            <ion-icon name="close-outline"></ion-icon>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        window.removeFile = function (index) {
+            selectedFiles.splice(index, 1);
+            renderPreviews();
+        };
+
+        document.getElementById('sellForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const shopProducts = await (await fetch('json/products.json')).json();
+            const selectedId = document.getElementById('itemSelect').value;
+            const baseProduct = shopProducts.find(p => p.id == selectedId);
+
+            // Xử lý ảnh (từ mảng selectedFiles) và video thực tế
+            const videoFile = document.getElementById('userVideo').files[0];
+
+            const userImages = await Promise.all(selectedFiles.map(file => fileToBase64(file)));
+            const userVideoData = videoFile ? await fileToBase64(videoFile) : null;
+
+            const newItem = {
+                id: Date.now(),
+                name: "[Pre-loved] " + baseProduct.name,
+                price: document.getElementById('itemPrice').value + "đ",
+                images: baseProduct.images, // Lấy ảnh gốc từ shop
+                evidenceImages: userImages,  // Ảnh thực tế khách gửi
+                evidenceVideo: userVideoData, // Video thực tế khách gửi
+                category: "Pre-loved",
+                condition: document.getElementById('itemCondition').value,
+                description: document.getElementById('itemDesc').value,
+                seller: "Bạn (Đang chờ duyệt)",
+                sizes: baseProduct.sizes || [], // Thêm thông tin size từ sản phẩm gốc
+                colors: baseProduct.colors || [] // Thêm thông tin màu từ sản phẩm gốc
+            };
+
+            // Kiểm tra và dọn dẹp bộ nhớ trước khi lưu
+            const estimatedSize = JSON.stringify(newItem).length * 2;
+            checkAndCleanStorage(estimatedSize);
+
+            const userItems = JSON.parse(localStorage.getItem('user_preloved')) || [];
+            userItems.push(newItem);
+            localStorage.setItem('user_preloved', JSON.stringify(userItems));
+
+            alert("Gửi yêu cầu ký gửi thành công! Sản phẩm của bạn sẽ được hiển thị sau khi Admin duyệt.");
+            this.reset();
+            selectedFiles = [];
+            document.getElementById('imagePreviewContainer').innerHTML = '';
+            renderPreloved();
+        });
+
+        window.onload = async () => {
+            const shopProducts = await loadShopProducts();
+            renderPreloved(shopProducts);
+            initReveal(); // Kích hoạt hiệu ứng hiển thị
+        };
+    </script>
+</body>
+
+</html>

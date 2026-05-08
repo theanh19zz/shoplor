@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ví Voucher của tôi - Thế Anh Shop</title>
+    <link rel="icon" href="images/logo1.png" type="image/x-icon">
+    <link rel="stylesheet" href="Style/main.css">
+    <link rel="stylesheet" href="Style/vouchers.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+</head>
+
+<body>
+    <header class="container" id="header">
+        <div class="header_top">
+            <img src="images/logo_block.jpg" alt="logo" id="logo" style="width: 100px;">
+            <div class="header_actions">
+                <a href="#" class="icon-cart">
+                    <ion-icon name="cart-outline"></ion-icon>
+                    <span id="cart-counter">0</span>
+                </a>
+            </div>
+        </div>
+        <nav>
+            <menu>
+                <ul>
+                    <li><a href="index.html">Trang Chủ</a></li>
+                    <li><a href="products.html">Cửa Hàng</a></li>
+                    <li><a href="collections.html">Bộ Sưu Tập</a></li>
+                    <li><a href="vouchers.html" style="color: var(--primary-color); font-weight: bold;">Ví Voucher</a>
+                    </li>
+                    <li><a href="news.html">Tin Tức</a></li>
+                </ul>
+            </menu>
+        </nav>
+    </header>
+
+    <main class="voucher-page">
+        <div class="container">
+            <div class="voucher-header">
+                <h1><ion-icon name="ticket-outline"></ion-icon> Ví Voucher Của Tôi</h1>
+                <p>Nơi lưu trữ các mã giảm giá bạn đã thu thập được</p>
+            </div>
+
+            <div id="voucher-list" class="voucher-list-container">
+                <!-- Voucher cards will be loaded here -->
+                <div class="loading-vouchers">Đang tải dữ liệu...</div>
+            </div>
+        </div>
+    </main>
+
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>© 2026 Thế Anh Shop. Tất cả các voucher có giá trị áp dụng khi mua hàng trực tuyến.</p>
+        </div>
+    </footer>
+
+    <script src="JavaScript/main.js"></script>
+    <script src="JavaScript/cart.js"></script>
+    <script src="JavaScript/vouchers.js"></script>
+</body>
+
+</html>

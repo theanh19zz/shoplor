@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Quản Lý Ký Gửi</title>
+    <link rel="stylesheet" href="Style/main.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        body {
+            background: #f4f7f6;
+            padding: 40px;
+            font-family: sans-serif;
+        }
+
+        .admin-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            text-align: left;
+            background: #eee;
+            padding: 15px;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .Pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .Approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .Rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #fff;
+        }
+
+        .btn-approve {
+            background: #27ae60;
+        }
+
+        .btn-reject {
+            background: #d63031;
+        }
+
+        .btn-list {
+            background: #000;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .modal-media-grid {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .modal-media-grid img,
+        .modal-media-grid video {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .btn-view {
+            background: #3498db;
+            color: #fff;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .thumb-box {
+            display: flex;
+            gap: 5px;
+        }
+
+        .thumb-box img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .video-thumb {
+            width: 40px;
+            height: 40px;
+            background: #333;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-card">
+        <h2>Quản Lý Yêu Cầu Ký Gửi</h2>
+        <table id="requestTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Khách hàng</th>
+                    <th>Sản phẩm</th>
+                    <th>Media (Click để xem)</th>
+                    <th>Giá mong muốn</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Detail Modal -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        function loadRequests() {
+            const requests = JSON.parse(localStorage.getItem('resell_requests')) || [];
+            const tbody = document.querySelector('#requestTable tbody');
+            tbody.innerHTML = requests.reverse().map((r, index) => `
+                <tr>
+                    <td>#${String(r.id).slice(-4)}</td>
+                    <td><strong>${r.customerName || 'N/A'}</strong><br><small>${r.customerEmail}</small></td>
+                    <td><strong>${r.productName}</strong><br><small>${r.brand} - ${r.condition} - Size: ${r.size}</small></td>
+                    <td>
+                        <div class="thumb-box">
+                            ${r.media.slice(0, 3).map(m =>
+                m.type.startsWith('video')
+                    ? `<div class="video-thumb" title="Video"><ion-icon name="play-circle-outline"></ion-icon></div>`
+                    : `<img src="${m.data}" onclick="window.open('${m.data}')">`
+            ).join('')}
+                            ${r.media.length > 3 ? `<small style="align-self:center; color:#888;">+${r.media.length - 3}</small>` : ''}
+                        </div>
+                    </td>
+                    <td>${r.price.toLocaleString()}đ</td>
+                    <td><span class="status-badge ${r.status}">${r.status}</span></td>
+                    <td>
+                        <div class="btn-group" style="flex-direction: column; gap: 5px;">
+                            <button class="btn-view" onclick="viewDetail(${r.id})">Chi tiết</button>
+                            ${r.status === 'Pending' ? `
+                                <button class="btn btn-approve" onclick="updateStatus(${r.id}, 'Approved')">Duyệt</button>
+                                <button class="btn btn-reject" onclick="updateStatus(${r.id}, 'Rejected')">Từ chối</button>
+                            ` : ''}
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        window.viewDetail = (id) => {
+            const requests = JSON.parse(localStorage.getItem('resell_requests'));
+            const r = requests.find(item => item.id === id);
+            const body = document.getElementById('modalBody');
+
+            body.innerHTML = `
+                <h3>Chi tiết yêu cầu #${String(r.id).slice(-4)}</h3>
+                <p><strong>Khách hàng:</strong> ${r.customerName} - ${r.customerPhone}</p>
+                <p><strong>Email:</strong> ${r.customerEmail}</p>
+                <hr>
+                <p><strong>Sản phẩm:</strong> ${r.productName} (${r.brand})</p>
+                <p><strong>Tình trạng:</strong> ${r.condition} | <strong>Size:</strong> ${r.size}</p>
+                <p><strong>Giá mong muốn:</strong> ${r.price.toLocaleString()}đ</p>
+                <p><strong>Mô tả:</strong> ${r.description || 'Không có mô tả'}</p>
+                <div class="modal-media-grid">
+                    ${r.media.map(m => m.type.startsWith('video')
+                ? `<video src="${m.data}" controls></video>`
+                : `<img src="${m.data}" onclick="window.open('${m.data}')">`
+            ).join('')}
+                </div>
+            `;
+            document.getElementById('detailModal').style.display = 'flex';
+        };
+
+        window.closeModal = () => { document.getElementById('detailModal').style.display = 'none'; };
+
+        window.updateStatus = (id, newStatus) => {
+            let requests = JSON.parse(localStorage.getItem('resell_requests'));
+            const idx = requests.findIndex(r => r.id === id);
+            requests[idx].status = newStatus;
+            localStorage.setItem('resell_requests', JSON.stringify(requests));
+
+            if (newStatus === 'Approved') {
+                listToStore(id);
+            } else {
+                alert("Đã từ chối yêu cầu.");
+            }
+            loadRequests();
+        };
+
+        window.listToStore = (id) => {
+            let requests = JSON.parse(localStorage.getItem('resell_requests'));
+            const req = requests.find(r => String(r.id) === String(id));
+
+            const newProduct = {
+                id: "LN" + id,
+                name: req.productName,
+                brand: req.brand,
+                resalePrice: req.price,
+                originalPrice: req.price * 1.4, // Ước tính giá trị gốc để hiển thị gạch ngang
+                image: req.media[0].data,
+                condition: req.condition,
+                size: req.size,
+                tag: "Second Hand",
+                isLikeNew: true
+            };
+
+            const storeItems = JSON.parse(localStorage.getItem('likenew_products')) || [];
+            if (!storeItems.find(p => p.id === newProduct.id)) {
+                storeItems.push(newProduct);
+                localStorage.setItem('likenew_products', JSON.stringify(storeItems));
+                alert("Sản phẩm đã được đăng lên cửa hàng Like-New!");
+            } else {
+                alert("Sản phẩm này đã có trên cửa hàng.");
+            }
+        };
+
+        loadRequests();
+    </script>
+</body>
+
+</html>

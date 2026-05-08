@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết sản phẩm | TA FashionStyle</title>
+    <link rel="icon" href="images/logo1.png" type="image/x-icon">
+    <link rel="stylesheet" href="Style/main.css">
+    <link rel="stylesheet" href="Style/ProductDetails.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <style>
+        /* Fix Layout Product Detail */
+        .product-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 60px;
+            margin-top: 40px;
+            align-items: start;
+        }
+
+        .product-gallery {
+            display: flex;
+            gap: 15px;
+        }
+
+        .gallery-thumbnails {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 80px;
+            flex-shrink: 0;
+        }
+
+        .thumb-img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border: 1px solid #eee;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .thumb-img.active,
+        .thumb-img:hover {
+            border-color: #333;
+        }
+
+        .gallery-main-view {
+            width: 100%;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-grow: 1;
+        }
+
+        .gallery-main-view img {
+            width: 100%;
+            width: auto;
+            height: auto;
+            max-height: 700px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Typography Info */
+        .product_name_main {
+            font-size: 26px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #333;
+            margin: 5px 0 15px 0;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        .product-sku {
+            color: #888;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .btn-add-cart {
+            background: #333;
+            color: #fff;
+            border: none;
+            padding: 18px 40px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+            font-size: 15px;
+        }
+
+        .btn-add-cart:hover {
+            background: #000;
+        }
+
+        .btn-buy-now {
+            background: #d63031;
+            color: #fff;
+            border: none;
+            padding: 18px 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.3s;
+            flex: 1;
+            font-size: 15px;
+        }
+
+        .btn-buy-now:hover {
+            background: #b32d2d;
+        }
+
+        .product-header-info {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .product_price_area {
+            margin: 20px 0;
+        }
+
+        .current-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: #d63031;
+        }
+
+        .product_des {
+            margin-top: 15px;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        /* Review Section Fix */
+        .review-section {
+            margin-top: 100px;
+            padding-top: 40px;
+            border-top: 1px solid #eee;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 50px;
+        }
+
+        .review-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            text-transform: uppercase;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .review-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: #333;
+        }
+
+        .review-container {
+            display: grid;
+            grid-template-columns: 0.8fr 1.2fr;
+            gap: 50px;
+        }
+
+        .review-form-container {
+            background: #fdfdfd;
+            padding: 30px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+
+        #review-content {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        @media (max-width: 991px) {
+
+            .product-layout,
+            .review-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .product-gallery {
+                flex-direction: column-reverse;
+            }
+
+            .gallery-thumbnails {
+                flex-direction: row;
+                width: 100%;
+                overflow-x: auto;
+            }
+
+            .thumb-img {
+                width: 80px;
+            }
+        }
+        /* Shopee Style Similar Products */
+        .similar-products-section {
+            background-color: #f5f5f5;
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+
+        .section-header-shopee {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-header-shopee h2 {
+            font-size: 16px;
+            font-weight: 500;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .view-all-link {
+            color: #ee4d2d;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .shopee-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+        }
+
+        .shopee-product-card {
+            background: #fff;
+            border-radius: 2px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            position: relative;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0,0,0,.05);
+        }
+
+        .shopee-product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 1px 20px 0 rgba(0,0,0,.05);
+            z-index: 1;
+            border-color: #ee4d2d;
+        }
+
+        .shopee-card-img {
+            width: 100%;
+            padding-top: 100%; /* Square */
+            position: relative;
+        }
+
+        .shopee-card-img img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .shopee-badge-mall {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #d0011b;
+            color: #fff;
+            font-size: 10px;
+            padding: 0 4px;
+            border-radius: 0 0 2px 0;
+            z-index: 2;
+        }
+
+        .shopee-card-info {
+            padding: 8px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .shopee-product-name {
+            font-size: 12px;
+            line-height: 14px;
+            height: 28px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .shopee-card-footer {
+            margin-top: auto;
+        }
+
+        .shopee-price-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+
+        .shopee-price {
+            color: #ee4d2d;
+            font-size: 16px;
+        }
+
+        .shopee-sold {
+            font-size: 10px;
+            color: rgba(0,0,0,.54);
+        }
+
+        .shopee-rating {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            margin-top: 4px;
+        }
+
+        .shopee-rating ion-icon {
+            font-size: 10px;
+            color: #ffce3d;
+        }
+
+        @media (max-width: 1200px) { .shopee-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media (max-width: 768px) { .shopee-grid { grid-template-columns: repeat(2, 1fr); } }
+    </style>
+</head>
+
+<body>
+    <div id="preloader">
+        <div class="loader"></div>
+    </div>
+
+    <header class="container" id="header">
+        <div class="header_top">
+            <div class="header_social">
+                <ion-icon name="logo-instagram"></ion-icon>
+                <ion-icon name="logo-facebook"></ion-icon>
+            </div>
+            <img src="images/logo_block.jpg" alt="logo" id="logo" onclick="window.location.href='index.html'"
+                style="cursor:pointer">
+            <div class="header_actions">
+                <div id="display_login">
+                    <span id="user_name" style="margin-right: 10px; font-weight: 500; cursor: pointer;"></span>
+                </div>
+                <a href="login.html" id="login_btn"><ion-icon name="person-circle-outline"></ion-icon></a>
+                <a href="#" class="icon-cart"><ion-icon name="cart-outline"></ion-icon><span
+                        id="cart-counter">0</span></a>
+            </div>
+        </div>
+        <nav id="navbar">
+            <ul>
+                <li><a href="index.html">Trang Chủ</a></li>
+                <li><a href="products.html">Cửa Hàng</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="index.html">Trang chủ</a> / <a href="products.html" class="category_name">Danh mục</a> / <span
+                class="product_name">Sản phẩm</span>
+        </div>
+
+        <div class="product-layout">
+            <!-- Cột trái: Gallery ảnh kiểu Canifa -->
+            <div class="product-gallery">
+                <div class="gallery-thumbnails" id="thumbnails-container">
+                    <!-- JS render ảnh nhỏ tại đây -->
+                </div>
+                <div class="gallery-main-view">
+                    <img src="" alt="Sản phẩm chính" id="product_image">
+                </div>
+            </div>
+
+            <!-- Cột phải: Thông tin chi tiết -->
+            <div class="product-details-content">
+                <div class="product-header-info">
+                    <span class="product-sku" id="product_sku">SKU: 8TH24S001</span>
+                    <h1 class="product_name_main">Tên sản phẩm</h1>
+                    <div class="product-rating-summary">
+                        <div class="stars">
+                            <ion-icon name="star"></ion-icon>
+                            <ion-icon name="star"></ion-icon>
+                            <ion-icon name="star"></ion-icon>
+                            <ion-icon name="star"></ion-icon>
+                            <ion-icon name="star-half"></ion-icon>
+                        </div>
+                        <span class="review-count">128 Đánh giá</span>
+                    </div>
+                    <div class="product_price_area">
+                        <span class="current-price" id="display_price">0đ</span>
+                        <span class="old-price-detail" id="display_old_price" style="display:none;"></span>
+                    </div>
+                    <div id="product_stock_status"
+                        style="margin-bottom: 15px; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                    </div>
+                </div>
+
+                <!-- Chọn màu sắc -->
+                <div class="option-group" id="color-group">
+                    <label class="option-label">MÀU SẮC: <strong id="color-name-label">Chọn màu</strong></label>
+                    <div class="color-options" id="color-options"></div>
+                </div>
+
+                <!-- Chọn kích cỡ -->
+                <div class="option-group" id="size-group">
+                    <label class="option-label">KÍCH THƯỚC: <strong id="size-name-label">Chọn size</strong></label>
+                    <div class="size-options" id="size-options"></div>
+                    <span id="size-error" style="color:red; font-size:12px; display:none;">Vui lòng chọn kích cỡ!</span>
+                </div>
+
+                <!-- Số lượng & Nút mua -->
+                <div class="purchase-actions">
+                    <div class="quantity-selector">
+                        <button id="minus">-</button>
+                        <input type="number" id="productCount" value="1" readonly>
+                        <button id="plus">+</button>
+                    </div>
+                    <button id="btn_add" class="btn-add-cart">THÊM VÀO GIỎ</button>
+                    <button id="btn_buy_now" class="btn-buy-now">MUA NGAY</button>
+                </div>
+
+                <!-- Accordion thông tin thêm -->
+                <div class="product-extra-info">
+                    <details open>
+                        <summary>MÔ TẢ SẢN PHẨM</summary>
+                        <div class="content product_des">
+                            Thông tin mô tả đang được cập nhật...
+                        </div>
+                    </details>
+                    <details>
+                        <summary>HƯỚNG DẪN BẢO QUẢN</summary>
+                        <div class="content">
+                            - Giặt máy ở chế độ nhẹ nhàng<br>
+                            - Không sử dụng chất tẩy<br>
+                            - Ủi ở nhiệt độ thấp
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phần Đánh giá & Bình luận -->
+        <section class="review-section">
+            <div class="review-header">
+                <h2>ĐÁNH GIÁ SẢN PHẨM</h2>
+            </div>
+
+            <div class="review-container">
+                <!-- Form gửi đánh giá -->
+                <div class="review-form-container">
+                    <h3>Gửi đánh giá của bạn</h3>
+                    <div class="star-rating-input" id="star-selector">
+                        <ion-icon name="star-outline" data-value="1"></ion-icon>
+                        <ion-icon name="star-outline" data-value="2"></ion-icon>
+                        <ion-icon name="star-outline" data-value="3"></ion-icon>
+                        <ion-icon name="star-outline" data-value="4"></ion-icon>
+                        <ion-icon name="star-outline" data-value="5"></ion-icon>
+                    </div>
+                    <textarea id="review-content" placeholder="Sản phẩm tuyệt vời, tôi rất thích..."></textarea>
+                    <div class="form-footer">
+                        <input type="file" id="review-image" accept="image/*">
+                        <button id="submit-review">GỬI ĐÁNH GIÁ NGAY</button>
+                    </div>
+                </div>
+
+                <!-- Danh sách bình luận -->
+                <div class="reviews-display">
+                    <h3>Tất cả bình luận</h3>
+                    <div id="reviews-list">
+                        <!-- JS sẽ render bình luận ở đây -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Shopee Style Similar Products Section -->
+        <section class="similar-products-section">
+            <div class="container">
+                <div class="section-header-shopee">
+                    <h2>CÓ THỂ BẠN CŨNG THÍCH</h2>
+                    <a href="products.html" class="view-all-link">Xem Tất Cả <ion-icon name="chevron-forward-outline"></ion-icon></a>
+                </div>
+                <div class="shopee-grid" id="similar-products-grid">
+                    <!-- JS will render Shopee-style cards here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>TA FashionStyle © 2024. Inspired by Uniqlo.</p>
+        </div>
+    </footer>
+
+    <div id="toast-overlay" class="toast-overlay">
+        <div class="toast-content">
+            <ion-icon name="checkmark-circle"></ion-icon>
+            <p>Đã thêm vào giỏ hàng thành công!</p>
+        </div>
+    </div>
+
+    <script src="JavaScript/main.js"></script>
+    <script src="JavaScript/cart.js"></script>
+    <script src="JavaScript/ProductDetails.js"></script>
+    <script>
+        // Ensure window.parsePrice is available for cart.js
+        if (typeof window.parsePrice !== 'function') {
+            window.parsePrice = (price) => parseInt(String(price).replace(/[^0-9]/g, '')) || 0;
+        }
+    </script>
+    <!-- redesigned sidebar cart -->
+    <div class="cart-section" id="cartSidebar">
+        <div class="cart-header">
+            <h2>GIỎ HÀNG</h2>
+            <div class="closeCart" id="closeCartBtn">
+                <ion-icon name="close-outline"></ion-icon>
+            </div>
+        </div>
+        <div class="cart_products_sidebar">
+            <!-- Items added by JS -->
+        </div>
+        <div class="cart_footer">
+            <div class="total_info">
+                <p>Tổng tiền thanh toán:</p>
+                <h3 id="sidebar_total_price">0đ</h3>
+            </div>
+            <div class="sidebar_btns">
+                <button class="btn_view_cart" onclick="location.href='cartPage.html'">XEM GIỎ HÀNG</button>
+                <button class="btn_checkout" onclick="checkOut()">THANH TOÁN</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
