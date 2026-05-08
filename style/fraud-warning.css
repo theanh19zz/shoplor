@@ -1,0 +1,165 @@
+/* Fraud Warning Page Styles */
+.fraud-page {
+    background-color: #fcfcfc;
+    padding: 50px 0;
+}
+
+.fraud-layout {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+/* Cột chính 75% */
+.fraud-main {
+    flex: 0 0 75%;
+}
+
+.fraud-banner {
+    background-color: #064e3b;
+    /* Xanh lá đậm */
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 40px;
+    box-shadow: var(--shadow-sm);
+}
+
+.fraud-banner h1 {
+    color: #f1c40f;
+    /* Vàng nổi bật */
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+/* Infographic Steps */
+.steps-infographic {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    margin-bottom: 40px;
+}
+
+.step-item {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.step-number {
+    flex: 0 0 45px;
+    height: 45px;
+    background-color: #d63031;
+    /* Đỏ */
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 20px;
+    box-shadow: 0 4px 10px rgba(214, 48, 49, 0.3);
+}
+
+.step-content h3 {
+    font-size: 18px;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.step-content p {
+    font-size: 15px;
+    color: #7f8c8d;
+    line-height: 1.6;
+}
+
+/* Warning Box */
+.important-warning {
+    background-color: #d63031;
+    padding: 30px;
+    border-radius: 12px;
+    color: #fff;
+}
+
+.important-warning h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 10px;
+}
+
+.important-warning ul li {
+    margin-bottom: 12px;
+    font-size: 16px;
+    list-style: disc;
+    margin-left: 20px;
+}
+
+/* Sidebar 25% */
+.fraud-sidebar {
+    flex: 0 0 25%;
+    position: sticky;
+    top: 110px;
+}
+
+.sidebar-widget {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 30px;
+}
+
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    color: var(--text-main);
+}
+
+.sidebar-links li {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.sidebar-links li:last-child {
+    border-bottom: none;
+}
+
+.sidebar-links a {
+    display: block;
+    padding: 12px 0;
+    font-size: 14px;
+    color: #555;
+    transition: all 0.3s;
+}
+
+.sidebar-links a:hover,
+.sidebar-links a.active {
+    color: var(--primary-color);
+    padding-left: 5px;
+    font-weight: 600;
+}
+
+.sidebar-banner-ad img {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 992px) {
+    .fraud-layout {
+        flex-direction: column;
+    }
+
+    .fraud-main,
+    .fraud-sidebar {
+        flex: 0 0 100%;
+        width: 100%;
+    }
+}

@@ -1,0 +1,208 @@
+.filter-sidebar {
+    flex: 0 0 280px;
+    /* Chiều rộng cố định 280px */
+    flex-shrink: 0;
+    width: 280px;
+    max-width: 280px;
+    position: sticky;
+    /* Vừa giữ vị trí vừa có tính chất như relative để dùng z-index */
+    top: 110px;
+    height: calc(100vh - 120px);
+    overflow-y: auto;
+    background: #fff;
+    z-index: 10;
+    /* Đảm bảo nằm trên phần sản phẩm */
+    box-sizing: border-box;
+    padding-right: 15px;
+}
+
+/* Ép các thành phần nhập liệu không vượt quá chiều rộng Sidebar */
+.filter-sidebar input,
+.price-slider-container,
+.size-grid {
+    max-width: 100% !important;
+    box-sizing: border-box;
+}
+
+.filter-group {
+    margin-bottom: 30px;
+    /* Tăng khoảng cách giữa các phần */
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.filter-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #333;
+}
+
+.applied-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.filter-tag {
+    background: #f0f0f0;
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.clear-all {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    text-decoration: underline;
+    font-size: 13px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+.accordion summary {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #333;
+}
+
+.accordion summary::-webkit-details-marker {
+    display: none;
+}
+
+.accordion .sub-filter {
+    padding-left: 5px;
+    margin-top: 10px;
+}
+
+.accordion .sub-filter li {
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: #666;
+    transition: color 0.2s;
+}
+
+.accordion .sub-filter li:hover {
+    color: var(--primary-color);
+    cursor: pointer;
+}
+
+.price-slider-container .slider {
+    height: 2px;
+    background: #e5e5e5;
+    width: 100%;
+    /* Đảm bảo thanh trượt không tràn */
+    max-width: 100%;
+    border-radius: 5px;
+    position: relative;
+    margin: 25px 0;
+}
+
+.price-slider-container .progress {
+    height: 100%;
+    left: 0%;
+    right: 0%;
+    position: absolute;
+    background: var(--primary-color);
+}
+
+.range-input {
+    position: relative;
+}
+
+.range-input input {
+    position: absolute;
+    width: 100%;
+    left: -2px;
+    height: 5px;
+    top: -29px;
+    background: none;
+    pointer-events: auto !important;
+    /* Bắt buộc cho phép tương tác */
+
+    appearance: none;
+
+}
+
+.size-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    justify-content: start;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.size-box {
+    width: 100%;
+    max-width: 60px;
+    height: 40px;
+    border: 1px solid #e5e5e5;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    /* Font in đậm */
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #333;
+}
+
+.size-box.active {
+    background: #000;
+    /* Khi chọn mới đổi màu nền */
+    color: #fff;
+    border-color: #000;
+    transform: scale(1.05);
+}
+
+.size-box:hover {
+    border-color: #000;
+}
+
+.color-filter-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.color-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    /* Viền rõ hơn cho màu trắng */
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.color-circle:hover {
+    transform: scale(1.15);
+}
+
+.color-circle.active {
+    box-shadow: 0 0 0 2px #fff, 0 0 0 3px #000;
+}
