@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "name": "Áo polo nam",
+        "price": "3.600.000đ",
+        "oldPrice": "5.625.000đ",
+        "images": [
+            "https://2885371169.e.cdneverest.net/catalog/product/8/t/8tp26a005-sk010-xl-1-u.webp",
+            "https://2885371169.e.cdneverest.net/catalog/product/8/t/8tp26a005-sk010-xl-2.webp",
+            "https://2885371169.e.cdneverest.net/catalog/product/8/t/8tp26a005-sk010-xl-3.webp"
+        ],
+        "description": "Áo polo nam được làm từ chất liệu cotton cao cấp, mang lại cảm giác mềm mại và thoáng mát.",
+        "sizes": ["S", "M", "L", "XL"],
+        "colors": ["Trắng", "Xanh", "Xám"],
+        "category": "Man",
+        "collection": "Summer"
+    },
+    {
+        "id": 2,
+        "name": "Quần tây âu nam",
+        "price": "4.200.000đ",
+        "oldPrice": "6.125.000đ",
+        "images": [
+            "https://2885371169.e.cdneverest.net/catalog/product/8/t/8tp26a005-sk010-xl-1-u.webp"
+        ],
+        "description": "Quần tây âu nam phong cách lịch lãm.",
+        "sizes": ["S", "M", "L", "XL"],
+        "colors": ["Đen", "Xám"],
+        "category": "Man",
+        "collection": "Summer"
+    }
+]
